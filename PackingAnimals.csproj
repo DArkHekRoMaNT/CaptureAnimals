@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{a7b06fe8-222a-44a2-96dd-a82da7c52460}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>teleportermod</RootNamespace>
+    <AssemblyName>teleportermod</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\teleportermod\</OutputPath>
+    <IntermediateOutputPath>..\..\obj\Debug\teleportermod\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\teleportermod\</OutputPath>
+    <IntermediateOutputPath>..\..\obj\Release\teleportermod\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+
+
+    <Reference Include="Microsoft.CSharp" />
+
+    <Reference Include="System.Data" />
+
+    <Reference Include="System.Net.Http" />
+
+    <Reference Include="System.Xml" />
+
+    <Reference Include="VintagestoryAPI">
+      <HintPath>/home/dark/ApplicationData/vintagestory/VintagestoryAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="VSSurvivalMod">
+      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSSurvivalMod.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="VSEssentials">
+      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSEssentials.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="VSCreativeMod">
+      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSCreativeMod.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>/home/dark/ApplicationData/vintagestory/Lib\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\" />
+    <Folder Include="src\" />
+    <Folder Include="src\Item\" />
+    <Folder Include="assets\packinganimals\recipes\" />
+    <Folder Include="assets\packinganimals\recipes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\PackingAnimals.cs" />
+    <Compile Include="src\Item\ItemPack.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="modinfo.json" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
