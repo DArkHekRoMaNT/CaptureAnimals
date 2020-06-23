@@ -1,0 +1,45 @@
+{
+	code: "throwncage",
+	class: "EntityThrownCage",
+	hitboxSize: { x: 0.25, y: 0.25 },
+	client: {
+		renderer: "Shape",
+		textures: {
+			"material": {
+				base: "game:block/stone/rock/andesite1", alternates: [ 
+				{ base: "game:block/stone/rock/chalk1" }, 
+				{ base: "game:block/stone/rock/claystone1" }, 
+				{ base: "game:block/stone/rock/granite1" }, 
+				{ base: "game:block/stone/rock/sandstone1" }, 
+				{ base: "game:block/stone/rock/shale1" }, 
+				{ base: "game:block/stone/rock/basalt1" }, 
+				{ base: "game:block/stone/rock/obsidian1" }, 
+				],	
+			}
+		},
+		shape: { base: "game:item/stone", rotateX: -90 },
+		size: 1,
+		behaviors: [{ code: "passivephysics" }, { code: "interpolateposition" }],
+	},
+	server: {
+		behaviors: [{ code: "passivephysics" }, { code: "despawn", minSeconds: 300 }],
+	},
+	sounds: {
+	},
+	attributes: {
+		texturealternateMapping: {
+			"stone": 0,
+			"chalk": 1,
+			"claystone": 2,
+			"granite": 3,
+			"sandstone": 4,
+			"shale": 5,
+			"basalt": 6,
+			"obsidian": 7,
+		},
+		physics: {
+			groundDragFactor: 1,
+			airDragFallingFactor: 0.25
+		}
+	},
+}

@@ -1,9 +1,9 @@
 {
   "type": "code",
-  "modid": "packinganimals",
-  "name": "Packing Animals",
+  "modid": "captureanimals",
+  "name": "Capture Animals",
   "author": "DArkHekRoMaNT",
-  "description": "Packed them all!",
+  "description": "Capture them all!",
   "version": "1.0.0",
   "dependency": {
     "game": "1.12.14"

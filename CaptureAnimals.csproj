@@ -76,22 +76,27 @@
     <Folder Include="assets\" />
     <Folder Include="src\" />
     <Folder Include="src\Item\" />
-    <Folder Include="assets\packinganimals\itemtypes\" />
-    <Folder Include="assets\packinganimals\itemtypes\" />
-    <Folder Include="assets\packinganimals\" />
-    <Folder Include="assets\packinganimals\textures\" />
-    <Folder Include="assets\packinganimals\textures\item\" />
+    <Folder Include="assets\captureanimals\itemtypes\" />
+    <Folder Include="assets\captureanimals\itemtypes\" />
+    <Folder Include="assets\captureanimals\" />
+    <Folder Include="assets\captureanimals\textures\" />
+    <Folder Include="assets\captureanimals\textures\item\" />
+    <Folder Include="src\Entity\" />
+    <Folder Include="assets\captureanimals\entities\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\PackingAnimals.cs" />
-    <Compile Include="src\Item\ItemPack.cs" />
+    <Compile Include="src\CaptureAnimals.cs" />
+    <Compile Include="src\Item\ItemCage.cs" />
+    <Compile Include="src\Entity\EntityThrownCage.cs" />
+    <Compile Include="src\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="modinfo.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\packinganimals\itemtypes\pack.json" />
-    <None Include="assets\packinganimals\textures\item\pack.png" />
+    <None Include="assets\captureanimals\itemtypes\cage.json" />
+    <None Include="assets\captureanimals\textures\item\cage.png" />
+    <None Include="assets\captureanimals\entities\throwncage.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

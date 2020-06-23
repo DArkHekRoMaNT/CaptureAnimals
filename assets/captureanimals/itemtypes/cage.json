@@ -1,6 +1,6 @@
 ﻿{
-    code: "pack",
-    class: "ItemPack",
+    code: "cage",
+    class: "ItemCage",
     variantgroups: [
         { code: "type", states: ["empty", "full"] },
     ],
