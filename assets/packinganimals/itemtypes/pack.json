@@ -1,0 +1,16 @@
+﻿{
+    code: "pack",
+    class: "ItemPack",
+    variantgroups: [
+        { code: "type", states: ["empty", "full"] },
+    ],
+    texture: { base: "item/pack" },
+    creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
+    maxstacksizeByTypes: {
+        "empty": 2,
+        "full": 1
+    },
+    attributes: {
+        rackable: true
+    }
+}

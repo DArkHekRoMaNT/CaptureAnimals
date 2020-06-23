@@ -3,10 +3,10 @@
   "modid": "packinganimals",
   "name": "Packing Animals",
   "author": "DArkHekRoMaNT",
-  "description": "Packing all animals!",
+  "description": "Packed them all!",
   "version": "1.0.0",
   "dependency": {
     "game": "1.12.14"
   },
-    "website": "https://github.com/DArkHekRoMaNT/PackingAnimals";
+  "website": "https://github.com/DArkHekRoMaNT/PackingAnimals"
 }

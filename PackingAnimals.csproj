@@ -76,8 +76,11 @@
     <Folder Include="assets\" />
     <Folder Include="src\" />
     <Folder Include="src\Item\" />
-    <Folder Include="assets\packinganimals\recipes\" />
-    <Folder Include="assets\packinganimals\recipes\" />
+    <Folder Include="assets\packinganimals\itemtypes\" />
+    <Folder Include="assets\packinganimals\itemtypes\" />
+    <Folder Include="assets\packinganimals\" />
+    <Folder Include="assets\packinganimals\textures\" />
+    <Folder Include="assets\packinganimals\textures\item\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\PackingAnimals.cs" />
@@ -85,6 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="modinfo.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\packinganimals\itemtypes\pack.json" />
+    <None Include="assets\packinganimals\textures\item\pack.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

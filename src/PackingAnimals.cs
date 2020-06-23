@@ -12,8 +12,8 @@ namespace PackingAnimals
             base.Start(api);
 
             string[] items = {
-            "ItemPack"
-        };
+                "ItemPack"
+            };
 
             foreach (string e in items)
             {
