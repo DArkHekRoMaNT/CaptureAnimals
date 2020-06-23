@@ -6,10 +6,7 @@
     ],
     texture: { base: "item/pack" },
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
-    maxstacksizeByTypes: {
-        "empty": 2,
-        "full": 1
-    },
+    maxstacksize: 1,
     attributes: {
         rackable: true
     }

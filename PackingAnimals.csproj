@@ -7,8 +7,8 @@
     <ProjectGuid>{a7b06fe8-222a-44a2-96dd-a82da7c52460}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>teleportermod</RootNamespace>
-    <AssemblyName>teleportermod</AssemblyName>
+    <RootNamespace>packinganimals</RootNamespace>
+    <AssemblyName>packinganimals</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,16 +16,16 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\teleportermod\</OutputPath>
-    <IntermediateOutputPath>..\..\obj\Debug\teleportermod\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Debug\packinganimals\</OutputPath>
+    <IntermediateOutputPath>..\..\obj\Debug\packinganimals\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\teleportermod\</OutputPath>
-    <IntermediateOutputPath>..\..\obj\Release\teleportermod\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Release\packinganimals\</OutputPath>
+    <IntermediateOutputPath>..\..\obj\Release\packinganimals\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

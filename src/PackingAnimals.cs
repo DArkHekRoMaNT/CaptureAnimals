@@ -18,6 +18,7 @@ namespace PackingAnimals
             foreach (string e in items)
             {
                 api.RegisterItemClass(e, Type.GetType(e));
+                api.World.Logger.Debug("Registered [" + e + "]");
             }
         }
     }
