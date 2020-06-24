@@ -10,7 +10,7 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
-        public static float MIN_HEALTH = 1; //0.1f;
+        public static float MIN_HEALTH = 0.999f; //0.1f;
 
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
@@ -87,7 +87,8 @@ namespace CaptureAnimals
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"), byEntity, byPlayer, false, 8);
 
-            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":throwncage"));
+            string variant = stack.Item.CodeEndWithoutParts(1);
+            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":throwncage-" + variant));
             Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
             ((EntityThrownCage)entity).FiredBy = byEntity;
             ((EntityThrownCage)entity).ProjectileStack = stack;

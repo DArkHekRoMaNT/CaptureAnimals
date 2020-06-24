@@ -73,16 +73,14 @@
     
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="assets\" />
     <Folder Include="src\" />
     <Folder Include="src\Item\" />
     <Folder Include="assets\captureanimals\itemtypes\" />
-    <Folder Include="assets\captureanimals\itemtypes\" />
-    <Folder Include="assets\captureanimals\" />
-    <Folder Include="assets\captureanimals\textures\" />
-    <Folder Include="assets\captureanimals\textures\item\" />
     <Folder Include="src\Entity\" />
-    <Folder Include="assets\captureanimals\entities\" />
+    <Folder Include="assets\captureanimals\shapes\item\" />
+    <Folder Include="assets\captureanimals\recipes\" />
+    <Folder Include="assets\captureanimals\recipes\smithing\" />
+    <Folder Include="assets\captureanimals\recipes\grid\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\CaptureAnimals.cs" />
@@ -94,9 +92,14 @@
     <Content Include="modinfo.json" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\captureanimals\itemtypes\cage.json" />
-    <None Include="assets\captureanimals\textures\item\cage.png" />
     <None Include="assets\captureanimals\entities\throwncage.json" />
+    <None Include="assets\captureanimals\textures\item\cage.png" />
+    <None Include="assets\captureanimals\shapes\item\cage.json" />
+    <None Include="assets\captureanimals\itemtypes\cage.json" />
+    <None Include="assets\captureanimals\recipes\smithing\cage-case.json" />
+    <None Include="assets\captureanimals\recipes\grid\cage.json" />
+    <None Include="assets\captureanimals\shapes\item\cage-case.json" />
+    <None Include="assets\captureanimals\itemtypes\cage-case.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

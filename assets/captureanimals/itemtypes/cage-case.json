@@ -1,19 +1,14 @@
 ﻿{
-    code: "cage",
-    class: "ItemCage",
-    shape: { base: "item/cage" },
+    code: "cage-case",
+    shape: { base: "item/cage-case" },
     variantgroups: [
         { code: "metal", loadFromProperties: "game:block/metal" },
     ],
     textures: { 
-        "core": { base: "game:item/tool/material/gold" },
         "case": { base: "game:block/metal/plate/{metal}" }
     },
-    creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
+    creativeinventory: { "general": ["*"], "items": ["*"] },
     maxstacksize: 1,
-    attributes: {
-        is_captured: false
-    },
     tpHandTransform: {
         translation: { x: -0.9, y: -1.5, z: -1.1 },
         rotation: { x: 0, y: -62, z: 18 },

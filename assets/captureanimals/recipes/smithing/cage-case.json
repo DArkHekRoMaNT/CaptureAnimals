@@ -1,0 +1,15 @@
+{
+	ingredient: { type: "item", code: "game:ingot-*", name: "type"},
+	pattern: ,
+    pattern: [[
+        "__###__",
+        "_#_#_#_",
+        "#__#__#",
+        "#######",
+        "#__#__#",
+        "_#_#_#_",
+        "__###__"
+    ]],
+	name: "Cage case",
+	output: { type: "item", code: "cage-case-{type}" }
+}

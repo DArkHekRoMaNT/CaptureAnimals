@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
+using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
@@ -102,7 +103,7 @@ namespace CaptureAnimals
                     return dist < 0.5f;
                 });
 
-                if (entity != null && (entity as EntityPlayer) == null)
+                if (entity != null && (entity as EntityPlayer) == null && entity.Alive)
                 {
                     bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy == null ? this : FiredBy, Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
@@ -124,6 +125,12 @@ namespace CaptureAnimals
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
                             entity.Die(EnumDespawnReason.Removed);
+                            Die();
+                        }
+                        else
+                        {
+                            Util.SendMessage(Lang.Get("error-too-much-hp"), Api, FiredBy as EntityAgent);
+                            Api.World.SpawnItemEntity(ProjectileStack, entity.Pos.XYZ);
                             Die();
                         }
                     }
