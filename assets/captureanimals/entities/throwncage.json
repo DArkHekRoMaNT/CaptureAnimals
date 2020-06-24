@@ -1,16 +1,23 @@
 {
 	code: "throwncage",
 	class: "EntityThrownCage",
-	hitboxSize: { x: 0.25, y: 0.25 },
+	hitboxSize: { x: 0.5, y: 0.5 },
     variantgroups: [
         { code: "metal", loadFromProperties: "game:block/metal" },
+        { code: "type", states: ["empty", "full"] }
     ],
 	client: {
 		renderer: "Shape",
         shape: { base: "item/cage" },
-		textures: { 
-            "core" : { base: "game:item/tool/material/gold" },
-            "case" : { base: "game:block/metal/plate/{metal}" }
+		texturesByType: { 
+            "*-empty": {
+                "core" : { base: "game:item/tool/material/blackbronze" },
+                "case" : { base: "game:block/metal/plate/{metal}" }
+            },
+            "*-full": {
+                "core" : { base: "game:item/tool/material/gold" },
+                "case" : { base: "game:block/metal/plate/{metal}" }
+            },
         },
 		size: 0.5,
 		behaviors: [{ code: "passivephysics" }, { code: "interpolateposition" }],

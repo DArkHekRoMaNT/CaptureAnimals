@@ -42,7 +42,7 @@ namespace CaptureAnimals
         public override void OnGameTick(float dt)
         {
             base.OnGameTick(dt);
-            if (ShouldDespawn) return;
+            if (OnGround || ShouldDespawn) return;
 
             EntityPos pos = LocalPos;
 
@@ -91,7 +91,7 @@ namespace CaptureAnimals
                 return;
             }
 
-            if (World is IServerWorldAccessor && ProjectileStack.Item.LastCodePart() == "empty")
+            if (World is IServerWorldAccessor && ProjectileStack.Item?.LastCodePart() == "empty")
             {
                 Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) => {
                     if (e.EntityId == this.EntityId || (FiredBy != null && e.EntityId == FiredBy.EntityId && World.ElapsedMilliseconds - msLaunch < 500) || !e.IsInteractable)
@@ -116,13 +116,13 @@ namespace CaptureAnimals
 
                     if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
                     {
-                        if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH)
+                        if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH_PCTG || behavior.Health <= ItemCage.MIN_HEALTH)
                         {
-                            AssetLocation location = ProjectileStack.Item.CodeWithVariant("type", "full");
+                            AssetLocation location = ProjectileStack.Item?.CodeWithVariant("type", "full");
                             ItemStack full = new ItemStack(Api.World.GetItem(location));
 
                             Util.SaveEntityInAttributes(entity, full, "capture");
-                            full.Attributes.SetString("capture_name", full.GetName());
+                            full.Attributes.SetString("capture_name", entity.GetName());
 
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
@@ -131,7 +131,7 @@ namespace CaptureAnimals
                         }
                         else
                         {
-                            Util.SendMessage(Lang.Get("error-too-much-hp"), Api, FiredBy as EntityAgent);
+                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":error-too-much-hp"), Api, FiredBy as EntityAgent);
                             Api.World.SpawnItemEntity(ProjectileStack, entity.Pos.XYZ);
                             Die();
                         }
@@ -155,12 +155,12 @@ namespace CaptureAnimals
             double speed = pos.Motion.Length();
 
             if (CollisionBox == null) return;
-            CollisionBox.X1 = -0.2f;
-            CollisionBox.X2 = 0.2f;
-            CollisionBox.Z1 = -0.2f;
-            CollisionBox.Z2 = 0.2f;
+            CollisionBox.X1 = -0.5f;
+            CollisionBox.X2 = 0.5f;
+            CollisionBox.Z1 = -0.5f;
+            CollisionBox.Z2 = 0.5f;
             CollisionBox.Y1 = 0f;
-            CollisionBox.Y2 = 0.2f;
+            CollisionBox.Y2 = 0.5f;
         }
 
 
@@ -175,7 +175,6 @@ namespace CaptureAnimals
             return ProjectileStack;
         }
 
-        //TODO Check bee
         public override void OnCollided()
         {
             if (ProjectileStack.Item?.LastCodePart() != "full") return;

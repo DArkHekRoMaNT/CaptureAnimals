@@ -10,7 +10,8 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
-        public static float MIN_HEALTH = 0.999f; //0.1f;
+        public static float MIN_HEALTH_PCTG = 0.25f;
+        public static float MIN_HEALTH = 3f;
 
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
@@ -93,7 +94,7 @@ namespace CaptureAnimals
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"), byEntity, byPlayer, false, 8);
 
-            string variant = stack.Item.CodeWithoutParts(1);
+            string variant = stack.Item.Code.Path;
             EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":thrown" + variant));
             Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
             ((EntityThrownCage)entity).FiredBy = byEntity;
@@ -125,13 +126,10 @@ namespace CaptureAnimals
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if (inSlot.Itemstack.Item.LastCodePart() == "empty") {
-                dsc.AppendLine(Lang.Get("heldhelp-cage-empty"));
-            }
-            else if (inSlot.Itemstack.Item.LastCodePart() == "full")
+            if (inSlot.Itemstack.Item.LastCodePart() == "full")
             {
                 string animal = inSlot.Itemstack.Attributes.GetString("capture_name");
-                dsc.AppendLine(Lang.Get("heldhelp-cage-full", animal));
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
             }
         }
 
@@ -142,7 +140,7 @@ namespace CaptureAnimals
                 return new WorldInteraction[] {
                     new WorldInteraction()
                     {
-                        ActionLangCode = "heldhelp-pack-throw-empty",
+                        ActionLangCode =CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-empty",
                         MouseButton = EnumMouseButton.Right,
                     }
                 }.Append(base.GetHeldInteractionHelp(inSlot));
@@ -152,7 +150,7 @@ namespace CaptureAnimals
                 return new WorldInteraction[] {
                     new WorldInteraction()
                     {
-                        ActionLangCode = "heldhelp-pack-throw-full",
+                        ActionLangCode = CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-full",
                         MouseButton = EnumMouseButton.Right,
                     }
                 }.Append(base.GetHeldInteractionHelp(inSlot));

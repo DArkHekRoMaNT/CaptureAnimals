@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CaptureAnimals</RootNamespace>
-    <AssemblyName>packinganimals</AssemblyName>
+    <AssemblyName>captureanimals</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\packinganimals\</OutputPath>
+    <OutputPath>..\..\bin\Debug\captureanimals</OutputPath>
     <IntermediateOutputPath>..\..\obj\Debug\packinganimals\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -24,7 +24,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\packinganimals\</OutputPath>
+    <OutputPath>..\..\bin\Release\captureanimals</OutputPath>
     <IntermediateOutputPath>..\..\obj\Release\packinganimals\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -99,6 +99,8 @@
     <None Include="assets\captureanimals\recipes\smithing\cage-case.json" />
     <None Include="assets\captureanimals\recipes\grid\cage.json" />
     <None Include="assets\captureanimals\shapes\item\cage-case.json" />
+    <None Include="assets\captureanimals\lang\en.json" />
+    <None Include="assets\captureanimals\lang\ru.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

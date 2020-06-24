@@ -1,14 +1,26 @@
 ﻿{
     code: "cage",
     class: "ItemCage",
-    shape: { base: "item/cage" },
     variantgroups: [
         { code: "metal", loadFromProperties: "game:block/metal" },
         { code: "type", states: ["case", "empty", "full"] }
     ],
-    textures: {
-        "core": { base: "game:item/tool/material/gold" },
-        "case": { base: "game:block/metal/plate/{metal}" }
+    shapeByType: { 
+        "*-case": { base: "item/cage-case" },
+        "*": { base: "item/cage" }
+    },
+    texturesByType: { 
+        "*-case": {
+            "case" : { base: "game:block/metal/plate/{metal}" }
+        },
+        "*-empty": {
+            "core" : { base: "game:item/tool/material/blackbronze" },
+            "case" : { base: "game:block/metal/plate/{metal}" }
+        },
+        "*-full": {
+            "core" : { base: "game:item/tool/material/gold" },
+            "case" : { base: "game:block/metal/plate/{metal}" }
+        }
     },
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
     maxstacksize: 1,

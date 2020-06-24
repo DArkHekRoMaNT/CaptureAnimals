@@ -1,6 +1,5 @@
 {
-	ingredient: { type: "item", code: "game:ingot-*", name: "type"},
-	pattern: ,
+	ingredient: { type: "item", code: "game:ingot-*", name: "metal"},
     pattern: [[
         "__###__",
         "_#_#_#_",
@@ -8,8 +7,8 @@
         "#######",
         "#__#__#",
         "_#_#_#_",
-        "__###__"
+        "__###__",
     ]],
-	name: "Cage case",
-	output: { type: "item", code: "cage-case-{type}" }
+	name: "Cage",
+	output: { type: "item", code: "cage-{metal}-case" }
 }
