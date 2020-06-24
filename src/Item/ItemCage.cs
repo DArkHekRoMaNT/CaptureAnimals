@@ -10,13 +10,16 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
+        public static float MIN_HEALTH = 1; //0.1f;
+        public Entity capture = null;
+
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
             return null;
         }
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
-        {        
+        {
             byEntity.Attributes.SetInt("aiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
             byEntity.StartAnimation("aim");
@@ -68,7 +71,6 @@ namespace CaptureAnimals
             if (secondsUsed < 0.35f) return;
 
             float damage = 0;
-            string rockType = slot.Itemstack.Collectible.FirstCodePart(1);
 
             ItemStack stack;
             if ((byEntity as EntityPlayer)?.Player.WorldData.CurrentGameMode != EnumGameMode.Creative)
@@ -78,6 +80,7 @@ namespace CaptureAnimals
             else
             {
                 stack = slot.TakeOut(0);
+                stack.StackSize = 1;
             }
             slot.MarkDirty();
 
@@ -91,9 +94,6 @@ namespace CaptureAnimals
             ((EntityThrownCage)entity).ProjectileStack = stack;
             ((EntityThrownCage)entity).Damage = damage;
 
-            int? texIndex = type.Attributes?["texturealternateMapping"]?[rockType].AsInt(0);
-            entity.WatchedAttributes.SetInt("textureIndex", texIndex == null ? 0 : (int)texIndex);
-
             float acc = (1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0));
             double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * acc * 0.75;
             double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * acc * 0.75;
@@ -105,9 +105,7 @@ namespace CaptureAnimals
             entity.ServerPos.SetPos(
                 byEntity.ServerPos.BehindCopy(0.21).XYZ.Add(0, byEntity.EyeHeight - 0.2, 0)
             );
-
             entity.ServerPos.Motion.Set(velocity);
-
             entity.Pos.SetFrom(entity.ServerPos);
             entity.World = byEntity.World;
             ((EntityThrownCage)entity).SetRotation();
@@ -121,7 +119,7 @@ namespace CaptureAnimals
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if (inSlot.Itemstack.Item.LastCodePart() == "empty") {
+            if ((inSlot.Itemstack.Item as ItemCage)?.capture == null) {
                 dsc.AppendLine(Lang.Get("heldhelp-pack-empty"));
             }
             else

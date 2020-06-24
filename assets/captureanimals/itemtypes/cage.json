@@ -1,10 +1,7 @@
 ﻿{
     code: "cage",
     class: "ItemCage",
-    variantgroups: [
-        { code: "type", states: ["empty", "full"] },
-    ],
-    texture: { base: "item/pack" },
+    texture: { base: "item/cage" },
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
     maxstacksize: 1,
     attributes: {

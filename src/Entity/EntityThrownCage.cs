@@ -3,6 +3,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.GameContent;
 
 namespace CaptureAnimals
 {
@@ -35,14 +36,11 @@ namespace CaptureAnimals
             {
                 ProjectileStack.ResolveBlockOrItem(World);
             }
-
-            Util.SendMessage("Init", api);
         }
 
         public override void OnGameTick(float dt)
         {
             base.OnGameTick(dt);
-            Util.SendMessage("Tick ", Api);
             if (ShouldDespawn) return;
 
             EntityPos pos = LocalPos;
@@ -107,6 +105,7 @@ namespace CaptureAnimals
 
                 if (entity != null)
                 {
+
                     bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy == null ? this : FiredBy, Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.LocalPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
@@ -116,6 +115,19 @@ namespace CaptureAnimals
                         World.PlaySoundFor(new AssetLocation("game:sounds/player/projectilehit"), (FiredBy as EntityPlayer).Player, false, 24);
                     }
 
+
+                    if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
+                    {
+                        Util.SendMessage("Health: " + (behavior.Health / behavior.MaxHealth) * 100 + "%", Api, (EntityAgent)FiredBy);
+                        if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH)
+                        {
+                            ItemStack full = ProjectileStack;
+                            (full.Item as ItemCage).capture = entity;
+                            //entity.Die();
+                        }
+                    }
+
+                    Api.World.SpawnItemEntity(ProjectileStack, pos.XYZ);
                     Die();
                     return;
                 }
@@ -155,6 +167,19 @@ namespace CaptureAnimals
             return ProjectileStack;
         }
 
+        public override void OnCollided()
+        {
+            Entity entity = (ProjectileStack.Item as ItemCage)?.capture;
+            if (entity == null)
+            {
+                base.OnCollided();
+                return;
+            }
+
+            /*entity.Pos = Pos;
+            EntityProperties type = null;
+            Api.ClassRegistry.CreateEntity(type);*/
+        }
 
         public override void OnCollideWithLiquid()
         {
