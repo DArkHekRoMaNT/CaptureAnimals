@@ -7,5 +7,5 @@
     width: 1,
     height: 2,
     shapeless: true,
-    output: { type: "item", code: "cage-{type}" }
+    output: { type: "item", code: "cage-empty-{type}" }
 }

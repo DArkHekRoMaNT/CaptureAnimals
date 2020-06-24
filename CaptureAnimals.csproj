@@ -7,7 +7,7 @@
     <ProjectGuid>{a7b06fe8-222a-44a2-96dd-a82da7c52460}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>packinganimals</RootNamespace>
+    <RootNamespace>CaptureAnimals</RootNamespace>
     <AssemblyName>packinganimals</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -99,7 +99,6 @@
     <None Include="assets\captureanimals\recipes\smithing\cage-case.json" />
     <None Include="assets\captureanimals\recipes\grid\cage.json" />
     <None Include="assets\captureanimals\shapes\item\cage-case.json" />
-    <None Include="assets\captureanimals\itemtypes\cage-case.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

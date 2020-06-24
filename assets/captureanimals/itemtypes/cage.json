@@ -4,15 +4,16 @@
     shape: { base: "item/cage" },
     variantgroups: [
         { code: "metal", loadFromProperties: "game:block/metal" },
+        { code: "type", states: ["case", "empty", "full"] }
     ],
-    textures: { 
+    textures: {
         "core": { base: "game:item/tool/material/gold" },
         "case": { base: "game:block/metal/plate/{metal}" }
     },
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
     maxstacksize: 1,
     attributes: {
-        is_captured: false
+        shelvable: true
     },
     tpHandTransform: {
         translation: { x: -0.9, y: -1.5, z: -1.1 },

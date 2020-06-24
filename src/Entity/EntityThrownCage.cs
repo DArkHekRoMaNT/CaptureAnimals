@@ -91,7 +91,7 @@ namespace CaptureAnimals
                 return;
             }
 
-            if (World is IServerWorldAccessor && !ProjectileStack.Attributes.GetBool("is_captured"))
+            if (World is IServerWorldAccessor && ProjectileStack.Item.LastCodePart() == "empty")
             {
                 Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) => {
                     if (e.EntityId == this.EntityId || (FiredBy != null && e.EntityId == FiredBy.EntityId && World.ElapsedMilliseconds - msLaunch < 500) || !e.IsInteractable)
@@ -118,9 +118,11 @@ namespace CaptureAnimals
                     {
                         if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH)
                         {
-                            ItemStack full = ProjectileStack;
+                            AssetLocation location = ProjectileStack.Item.CodeWithVariant("type", "full");
+                            ItemStack full = new ItemStack(Api.World.GetItem(location));
+
                             Util.SaveEntityInAttributes(entity, full, "capture");
-                            full.Attributes.SetBool("is_captured", true);
+                            full.Attributes.SetString("capture_name", full.GetName());
 
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
@@ -173,14 +175,10 @@ namespace CaptureAnimals
             return ProjectileStack;
         }
 
+        //TODO Check bee
         public override void OnCollided()
         {
-            if (!ProjectileStack.Attributes.GetBool("is_captured"))
-            {
-                Api.World.SpawnItemEntity(ProjectileStack, ServerPos.XYZ, ServerPos.Motion);
-                Die();
-                return;
-            }
+            if (ProjectileStack.Item?.LastCodePart() != "full") return;
 
             Entity entity = Util.GetEntityFromAttributes(ProjectileStack, "capture", Api.World);
             if(entity != null)
@@ -190,6 +188,11 @@ namespace CaptureAnimals
                 entity.PositionBeforeFalling.Set(Pos.XYZ);
 
                 Api.World.SpawnEntity(entity);
+                Die();
+            }
+            else
+            {
+                Util.SendMessage("Undefined entity in cage!", Api, FiredBy as EntityAgent);
                 Die();
             }
         }

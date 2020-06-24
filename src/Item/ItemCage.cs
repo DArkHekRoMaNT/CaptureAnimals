@@ -19,6 +19,12 @@ namespace CaptureAnimals
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
+            if (slot.Itemstack.Item.LastCodePart() == "case")
+            {
+                base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
+                return;
+            }
+
             byEntity.Attributes.SetInt("aiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
             byEntity.StartAnimation("aim");
@@ -87,8 +93,8 @@ namespace CaptureAnimals
             if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"), byEntity, byPlayer, false, 8);
 
-            string variant = stack.Item.CodeEndWithoutParts(1);
-            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":throwncage-" + variant));
+            string variant = stack.Item.CodeWithoutParts(1);
+            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":thrown" + variant));
             Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
             ((EntityThrownCage)entity).FiredBy = byEntity;
             ((EntityThrownCage)entity).ProjectileStack = stack;
@@ -119,25 +125,39 @@ namespace CaptureAnimals
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if (!inSlot.Itemstack.Attributes.GetBool("is_captured")) {
-                dsc.AppendLine(Lang.Get("heldhelp-pack-empty"));
+            if (inSlot.Itemstack.Item.LastCodePart() == "empty") {
+                dsc.AppendLine(Lang.Get("heldhelp-cage-empty"));
             }
-            else
+            else if (inSlot.Itemstack.Item.LastCodePart() == "full")
             {
-                string animal = inSlot.Itemstack.Attributes.GetString("capture");
-                dsc.AppendLine(Lang.Get("heldhelp-pack-full", animal));
+                string animal = inSlot.Itemstack.Attributes.GetString("capture_name");
+                dsc.AppendLine(Lang.Get("heldhelp-cage-full", animal));
             }
         }
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
         {
-            return new WorldInteraction[] {
-                new WorldInteraction()
-                {
-                    ActionLangCode = "heldhelp-pack-throw",
-                    MouseButton = EnumMouseButton.Right,
-                }
-            }.Append(base.GetHeldInteractionHelp(inSlot));
+            if (inSlot.Itemstack.Item.LastCodePart() == "empty")
+            {
+                return new WorldInteraction[] {
+                    new WorldInteraction()
+                    {
+                        ActionLangCode = "heldhelp-pack-throw-empty",
+                        MouseButton = EnumMouseButton.Right,
+                    }
+                }.Append(base.GetHeldInteractionHelp(inSlot));
+            }
+            else if (inSlot.Itemstack.Item.LastCodePart() == "full")
+            {
+                return new WorldInteraction[] {
+                    new WorldInteraction()
+                    {
+                        ActionLangCode = "heldhelp-pack-throw-full",
+                        MouseButton = EnumMouseButton.Right,
+                    }
+                }.Append(base.GetHeldInteractionHelp(inSlot));
+            }
+            else return base.GetHeldInteractionHelp(inSlot);
         }
     }
 }
