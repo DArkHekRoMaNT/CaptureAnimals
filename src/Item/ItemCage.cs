@@ -118,7 +118,7 @@ namespace CaptureAnimals
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if (inSlot.Itemstack.Attributes.GetBool("is_captured")) {
+            if (!inSlot.Itemstack.Attributes.GetBool("is_captured")) {
                 dsc.AppendLine(Lang.Get("heldhelp-pack-empty"));
             }
             else

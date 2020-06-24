@@ -5,6 +5,7 @@
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
     maxstacksize: 1,
     attributes: {
-        rackable: true
+        rackable: true,
+        is_captured: false
     }
 }

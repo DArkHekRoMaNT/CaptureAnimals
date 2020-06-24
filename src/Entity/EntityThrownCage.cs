@@ -90,8 +90,7 @@ namespace CaptureAnimals
                 return;
             }
 
-
-            if (World is IServerWorldAccessor)
+            if (World is IServerWorldAccessor && !ProjectileStack.Attributes.GetBool("is_captured"))
             {
                 Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) => {
                     if (e.EntityId == this.EntityId || (FiredBy != null && e.EntityId == FiredBy.EntityId && World.ElapsedMilliseconds - msLaunch < 500) || !e.IsInteractable)
@@ -103,9 +102,8 @@ namespace CaptureAnimals
                     return dist < 0.5f;
                 });
 
-                if (entity != null)
+                if (entity != null && (entity as EntityPlayer) == null)
                 {
-
                     bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy == null ? this : FiredBy, Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.LocalPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
@@ -115,10 +113,8 @@ namespace CaptureAnimals
                         World.PlaySoundFor(new AssetLocation("game:sounds/player/projectilehit"), (FiredBy as EntityPlayer).Player, false, 24);
                     }
 
-
                     if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
                     {
-                        Util.SendMessage("Health: " + (behavior.Health / behavior.MaxHealth) * 100 + "%", Api, (EntityAgent)FiredBy);
                         if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH)
                         {
                             ItemStack full = ProjectileStack;
@@ -129,9 +125,9 @@ namespace CaptureAnimals
 
                             entity.Die(EnumDespawnReason.Removed);
                             Die();
-                            return;
                         }
                     }
+
                     return;
                 }
             }
@@ -174,14 +170,18 @@ namespace CaptureAnimals
         {
             if (!ProjectileStack.Attributes.GetBool("is_captured"))
             {
-                Api.World.SpawnItemEntity(ProjectileStack, Pos.XYZ);
+                Api.World.SpawnItemEntity(ProjectileStack, ServerPos.XYZ, ServerPos.Motion);
+                Die();
                 return;
             }
 
             Entity entity = Util.GetEntityFromAttributes(ProjectileStack, "capture", Api.World);
             if(entity != null)
             {
-                entity.Pos = Pos;
+                entity.Pos.SetPos(Pos);
+                entity.ServerPos.SetPos(ServerPos);
+                entity.PositionBeforeFalling.Set(Pos.XYZ);
+
                 Api.World.SpawnEntity(entity);
                 Die();
             }
