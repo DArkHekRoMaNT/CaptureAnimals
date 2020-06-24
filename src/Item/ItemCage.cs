@@ -11,7 +11,6 @@ namespace CaptureAnimals
     public class ItemCage : Item
     {
         public static float MIN_HEALTH = 1; //0.1f;
-        public Entity capture = null;
 
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
@@ -119,7 +118,7 @@ namespace CaptureAnimals
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if ((inSlot.Itemstack.Item as ItemCage)?.capture == null) {
+            if (inSlot.Itemstack.Attributes.GetBool("is_captured")) {
                 dsc.AppendLine(Lang.Get("heldhelp-pack-empty"));
             }
             else

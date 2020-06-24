@@ -122,13 +122,16 @@ namespace CaptureAnimals
                         if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH)
                         {
                             ItemStack full = ProjectileStack;
-                            (full.Item as ItemCage).capture = entity;
-                            //entity.Die();
+                            Util.SaveEntityInAttributes(entity, full, "capture");
+                            full.Attributes.SetBool("is_captured", true);
+
+                            Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
+
+                            entity.Die(EnumDespawnReason.Removed);
+                            Die();
+                            return;
                         }
                     }
-
-                    Api.World.SpawnItemEntity(ProjectileStack, pos.XYZ);
-                    Die();
                     return;
                 }
             }
@@ -169,16 +172,19 @@ namespace CaptureAnimals
 
         public override void OnCollided()
         {
-            Entity entity = (ProjectileStack.Item as ItemCage)?.capture;
-            if (entity == null)
+            if (!ProjectileStack.Attributes.GetBool("is_captured"))
             {
-                base.OnCollided();
+                Api.World.SpawnItemEntity(ProjectileStack, Pos.XYZ);
                 return;
             }
 
-            /*entity.Pos = Pos;
-            EntityProperties type = null;
-            Api.ClassRegistry.CreateEntity(type);*/
+            Entity entity = Util.GetEntityFromAttributes(ProjectileStack, "capture", Api.World);
+            if(entity != null)
+            {
+                entity.Pos = Pos;
+                Api.World.SpawnEntity(entity);
+                Die();
+            }
         }
 
         public override void OnCollideWithLiquid()
