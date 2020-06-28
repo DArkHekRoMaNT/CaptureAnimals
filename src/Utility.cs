@@ -44,24 +44,24 @@ namespace CaptureAnimals
                 return entity;
             }
         }
-
-
-        public static void SendMessage(string msg, ICoreAPI api, EntityAgent byEntity = null)
+        public static void SendMessage(string msg, ICoreAPI api, Entity playerEntity = null, int chatGroup = -1)
         {
-            IPlayer byPlayer = api.World.PlayerByUid((byEntity as EntityPlayer)?.PlayerUID);
-            if(byPlayer == null)
+            if (chatGroup == -1) chatGroup = GlobalConstants.InfoLogChatGroup;
+
+            IPlayer player = api.World.PlayerByUid((playerEntity as EntityPlayer)?.PlayerUID);
+            if(player == null)
             {
                 api.World.Logger.Chat(msg);
             }
             else if (api.Side == EnumAppSide.Server)
             {
-                IServerPlayer sp = byPlayer as IServerPlayer;
-                sp.SendMessage(GlobalConstants.InfoLogChatGroup, msg, EnumChatType.Notification);
+                IServerPlayer sp = player as IServerPlayer;
+                sp.SendMessage(chatGroup, msg, EnumChatType.Notification);
                 api.World.Logger.Chat(msg);
             }
             else
             {
-                IClientPlayer cp = byPlayer as IClientPlayer;
+                IClientPlayer cp = player as IClientPlayer;
                 cp.ShowChatNotification(msg);
                 api.World.Logger.Chat(msg);
             }

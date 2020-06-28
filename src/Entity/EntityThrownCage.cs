@@ -39,6 +39,8 @@ namespace CaptureAnimals
             }
         }
 
+
+        //TODO: Убрать уничтожение при попадании в стену. Проверить хитбокс, т.к. нельзя попасть в дырку 1х1
         public override void OnGameTick(float dt)
         {
             base.OnGameTick(dt);
@@ -116,13 +118,21 @@ namespace CaptureAnimals
 
                     if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
                     {
-                        if (behavior.Health / behavior.MaxHealth <= ItemCage.MIN_HEALTH_PCTG || behavior.Health <= ItemCage.MIN_HEALTH)
+                        float chanceMin = ProjectileStack.Collectible.Attributes["defaultchance"]["min"].AsFloat();
+                        float maxChanceHealth = ProjectileStack.Collectible.Attributes["defaultchance"]["maxchancehealth"].AsFloat();
+
+                        string name = entity.GetName();
+                        string test = entity.Attributes.GetString("ttt");
+
+                        Util.SendMessage("ttt: " + test, Api, FiredBy);
+
+                        if (behavior.Health / behavior.MaxHealth <= 1 || behavior.Health <= 1)
                         {
                             AssetLocation location = ProjectileStack.Item?.CodeWithVariant("type", "full");
                             ItemStack full = new ItemStack(Api.World.GetItem(location));
 
                             Util.SaveEntityInAttributes(entity, full, "capture");
-                            full.Attributes.SetString("capture_name", entity.GetName());
+                            full.Attributes.SetString("capturename", entity.GetName());
 
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
@@ -131,7 +141,7 @@ namespace CaptureAnimals
                         }
                         else
                         {
-                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":error-too-much-hp"), Api, FiredBy as EntityAgent);
+                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":error-too-much-hp"), Api, FiredBy);
                             Api.World.SpawnItemEntity(ProjectileStack, entity.Pos.XYZ);
                             Die();
                         }

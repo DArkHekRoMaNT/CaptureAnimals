@@ -81,6 +81,7 @@
     <Folder Include="assets\captureanimals\recipes\" />
     <Folder Include="assets\captureanimals\recipes\smithing\" />
     <Folder Include="assets\captureanimals\recipes\grid\" />
+    <Folder Include="assets\captureanimals\patches\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\CaptureAnimals.cs" />
@@ -101,6 +102,7 @@
     <None Include="assets\captureanimals\shapes\item\cage-case.json" />
     <None Include="assets\captureanimals\lang\en.json" />
     <None Include="assets\captureanimals\lang\ru.json" />
+    <None Include="assets\captureanimals\patches\chicken.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
