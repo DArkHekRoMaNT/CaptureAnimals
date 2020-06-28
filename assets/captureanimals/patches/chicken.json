@@ -1,0 +1,10 @@
+[
+    { 
+        file: "game:entities/land/chicken-hen.json",
+        op: "add",
+        path: "/attributes",
+        value: {
+            test2: "test3"
+        }
+    }
+]

@@ -20,10 +20,18 @@
             },
         },
 		size: 0.5,
-		behaviors: [{ code: "passivephysics" }, { code: "interpolateposition" }],
+		behaviors: [
+            { code: "passivephysics" },
+            { code: "interpolateposition" },
+            { code: "floatupwhenstuck" }
+        ],
 	},
 	server: {
-		behaviors: [{ code: "passivephysics" }, { code: "despawn", minSeconds: 300 }],
+		behaviors: [
+            { code: "passivephysics" },
+            { code: "despawn", minSeconds: 300 },
+            { code: "floatupwhenstuck" }
+        ],
 	},
 	sounds: {
 	},

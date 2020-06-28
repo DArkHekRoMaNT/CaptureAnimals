@@ -10,8 +10,6 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
-        public static float MIN_HEALTH_PCTG = 0.25f;
-        public static float MIN_HEALTH = 3f;
 
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
@@ -128,7 +126,7 @@ namespace CaptureAnimals
 
             if (inSlot.Itemstack.Item.LastCodePart() == "full")
             {
-                string animal = inSlot.Itemstack.Attributes.GetString("capture_name");
+                string animal = inSlot.Itemstack.Attributes.GetString("capturename");
                 dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
             }
         }
