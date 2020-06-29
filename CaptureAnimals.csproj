@@ -88,6 +88,7 @@
     <Compile Include="src\Item\ItemCage.cs" />
     <Compile Include="src\Entity\EntityThrownCage.cs" />
     <Compile Include="src\Utility.cs" />
+    <Compile Include="src\CaptureAnimalRecipes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="modinfo.json" />
@@ -102,7 +103,6 @@
     <None Include="assets\captureanimals\shapes\item\cage-case.json" />
     <None Include="assets\captureanimals\lang\en.json" />
     <None Include="assets\captureanimals\lang\ru.json" />
-    <None Include="assets\captureanimals\patches\chicken.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
