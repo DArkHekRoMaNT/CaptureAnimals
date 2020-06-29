@@ -10,7 +10,6 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
-
         public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
         {
             return null;

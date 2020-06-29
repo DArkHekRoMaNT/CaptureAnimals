@@ -122,9 +122,12 @@ namespace CaptureAnimals
                         float maxChanceHealth = ProjectileStack.Collectible.Attributes["defaultchance"]["maxchancehealth"].AsFloat();
 
                         string name = entity.GetName();
-                        string test = entity.Attributes.GetString("ttt");
+                        bool exists = entity.Properties.Attributes["glitchAffected"].Exists;
+                        string test = entity.Properties.Attributes["glitchAffected"].AsBool().ToString();
 
-                        Util.SendMessage("ttt: " + test, Api, FiredBy);
+                        Util.SendMessage(entity.GetName(), Api, FiredBy);
+                        Util.SendMessage("exists: " + exists, Api, FiredBy);
+                        Util.SendMessage("test: " + test, Api, FiredBy);
 
                         if (behavior.Health / behavior.MaxHealth <= 1 || behavior.Health <= 1)
                         {

@@ -45,8 +45,9 @@
         translation: { x: 0, y: 0.17, z: 0 }
     },
     guiTransform: {
-        rotation: { x: 37, y: 135, z: 15 },
+        translation: { x: 3, y: 1, z: 0},
+        rotation: { x: 0, y: 45, z: 45 },
         origin: { x: 0.5, y: 0.5, z: 0.5 },
-        scale: 1.16
+        scale: 1
     }
 }
