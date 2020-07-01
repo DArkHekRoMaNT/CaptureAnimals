@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using Vintagestory.API;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -8,6 +9,7 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.Server;
+using Vintagestory.API.Util;
 
 namespace CaptureAnimals
 {
@@ -38,74 +40,95 @@ namespace CaptureAnimals
             LoadGridRecipes();
         }
 
+        struct Bait
+        {
+            public string type;
+            public string code;
+            public float chance;
+            public float minHealth;
+        };
+
         public void AddRecipes()
         {
             List<EntityProperties> types = api.World.EntityTypes;
-            Dictionary<string, List<string>> baitForAnimals = new Dictionary<string, List<string>>(); // Key = bait, Value = animals
+            Dictionary<Bait, List<string>> baitForAnimals = new Dictionary<Bait, List<string>>(); // Key = bait, Value = animals
             foreach (var type in types)
             {
                 if (type.Class == "EntityAgent" && type.Attributes != null)
                 {
-                    if (type.Attributes[CaptureAnimals.MOD_ID]["bait"].Exists &&
+                    if (type.Attributes[CaptureAnimals.MOD_ID]["type"].Exists &&
+                        type.Attributes[CaptureAnimals.MOD_ID]["code"].Exists &&
                         type.Attributes[CaptureAnimals.MOD_ID]["chance"].Exists &&
-                        type.Attributes[CaptureAnimals.MOD_ID]["chance"]["min"].Exists &&
-                        type.Attributes[CaptureAnimals.MOD_ID]["chance"]["maxchancehealth"].Exists)
+                        type.Attributes[CaptureAnimals.MOD_ID]["minhealth"].Exists)
                     {
-                        string bait = type.Attributes[CaptureAnimals.MOD_ID]["bait"].AsString();
-                        List<string> animals = new List<string>
+                        Bait bait = new Bait
                         {
-                            type.Code.Domain + type.Code.Path
+                            type = type.Attributes[CaptureAnimals.MOD_ID]["type"].AsString(),
+                            code = type.Attributes[CaptureAnimals.MOD_ID]["code"].AsString(),
+                            chance = type.Attributes[CaptureAnimals.MOD_ID]["chance"].AsFloat(),
+                            minHealth = type.Attributes[CaptureAnimals.MOD_ID]["minhealth"].AsFloat(),
                         };
+
+                        string animal = type.Code.Domain + type.Code.Path;
 
                         if (baitForAnimals.ContainsKey(bait))
                         {
-                            animals.AddRange(baitForAnimals[bait]);
-                            baitForAnimals[bait] = animals;
+                            baitForAnimals[bait].Add(animal);
                         }
                         else
                         {
-                            baitForAnimals.Add(bait, animals);
+                            baitForAnimals.Add(bait, new List<string> { animal });
                         }
                     }
                 }
-            }        
+            }
 
+            string cageVariant = Util.FirstCodeMapping("item", CaptureAnimals.MOD_ID + ":cage-*-empty", api.World);
+            AssetLocation cageLoc = new AssetLocation(cageVariant);
             foreach (var val in baitForAnimals) {
-                AssetLocation loc = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-bait-" + val.Key.Replace(':', '-'));
+                List<string> codes = new List<string>();
+                codes = Util.CodeMapping(val.Key.type, val.Key.code, api.World);
 
-                AssetLocation asset = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-copper-empty");
-                ItemStack output = new ItemStack(api.World.GetItem(asset));
-                output.Attributes.SetString("bait", val.Key);
-                output.Attributes.SetString("animals", Util.ListStrToStr(val.Value));
-
-                GridRecipe recipe = new GridRecipe
+                foreach (var code in codes)
                 {
-                    IngredientPattern = "CB",
-                    Ingredients = new Dictionary<string, CraftingRecipeIngredient>(),
-                    Width = 2,
-                    Height = 1,
-                    Shapeless = true,
-                    Output = new CraftingRecipeIngredient
+                    string postfix = val.Key.type + "-" + code.Replace(':', '-');
+                    AssetLocation recipeName = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-with-" + postfix);
+
+                    ItemStack output = new ItemStack(api.World.GetItem(cageLoc));
+                    output.Attributes.SetString("animals", Util.ListStrToStr(val.Value));
+                    output.Attributes.SetString("bait-type", val.Key.type);
+                    output.Attributes.SetString("bait-code", code);
+                    output.Attributes.SetFloat("bait-chance", val.Key.chance);
+                    output.Attributes.SetFloat("bait-minhealth", val.Key.minHealth);
+
+                    GridRecipe recipe = new GridRecipe
+                    {
+                        IngredientPattern = "CB",
+                        Ingredients = new Dictionary<string, CraftingRecipeIngredient>(),
+                        Width = 2,
+                        Height = 1,
+                        Shapeless = true,
+                        Output = new CraftingRecipeIngredient
+                        {
+                            Type = EnumItemClass.Item,
+                            Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
+                            Attributes = new JsonObject(JToken.Parse(output.Attributes.ToJsonToken()))
+                        }
+                    };
+                    recipe.Ingredients.Add("C", new CraftingRecipeIngredient
                     {
                         Type = EnumItemClass.Item,
-                        Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
-                        Attributes = new JsonObject(output.Attributes.ToJsonToken())
-                    }
-                };
-                recipe.Ingredients.Add("C", new CraftingRecipeIngredient
-                {
-                    Type = EnumItemClass.Item,
-                    Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
-                    Name = "type"
-                });
-                recipe.Ingredients.Add("B", new CraftingRecipeIngredient
-                {
-                    Type = EnumItemClass.Item,
-                    Code = new AssetLocation(val.Key),
-                    Name = "bait"
-                });
+                        Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
+                        Name = "type"
+                    });
+                    recipe.Ingredients.Add("B", new CraftingRecipeIngredient
+                    {
+                        Type = EnumItemClass.Item,
+                        Code = new AssetLocation(val.Key.code)
+                    });
 
-                gridRecipes.Add(loc, recipe);
+                    gridRecipes.Add(recipeName, recipe);
+                }
             }
         }
 
@@ -115,15 +138,15 @@ namespace CaptureAnimals
 
             foreach (var val in gridRecipes)
             {
-                LoadRecipe(val.Key, val.Value, ref recipeQuantity);
+                LoadRecipe(val.Key, val.Value);
+                recipeQuantity++;
             }
 
-            api.World.Logger.Event("{0} cage with bait recipes created by CaptureAnimals", recipeQuantity);
+            api.World.Logger.Event("{0} cage-with-bait recipes created by CaptureAnimals", recipeQuantity);
             api.World.Logger.StoryEvent(Lang.Get("Animal cages..."));
         }
 
-
-        public void LoadRecipe(AssetLocation loc, GridRecipe recipe, ref int recipeQuantity)
+        public void LoadRecipe(AssetLocation loc, GridRecipe recipe)
         {
             if (!recipe.Enabled) return;
             if (recipe.Name == null) recipe.Name = loc;
@@ -174,7 +197,6 @@ namespace CaptureAnimals
                 {
                     if (!subRecipe.ResolveIngredients(api.World)) continue;
                     api.RegisterCraftingRecipe(subRecipe);
-                    recipeQuantity++;
                 }
 
             }
@@ -182,7 +204,6 @@ namespace CaptureAnimals
             {
                 if (!recipe.ResolveIngredients(api.World)) return;
                 api.RegisterCraftingRecipe(recipe);
-                recipeQuantity++;
             }
 
         }

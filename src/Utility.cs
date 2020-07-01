@@ -9,6 +9,7 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.API.Util;
 
 namespace CaptureAnimals
 {
@@ -75,19 +76,91 @@ namespace CaptureAnimals
             SendMessage(msg, playerEntity.Api, playerEntity, chatGroup);
         }
 
-        private const char separator = ',';
+        private const string separator = ", ";
         public static string ListStrToStr(List<string> list) 
         {
-            StringBuilder str = new StringBuilder();
-            foreach(var val in list)
-            {
-                str.Append(val + separator);
-            }
-            return str.ToString();
+            return String.Join(separator, list.ToArray());
         }
         public static List<string> StrToListStr(string str)
         {
-            return str.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return str.Split(new string[] { separator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public static List<string> CodeMapping(string type, string code, IWorldAccessor world)
+        {
+            if (!code.Contains("*")) return new List<string> { code };
+
+            List<string> codes = new List<string>();
+            AssetLocation asset = new AssetLocation(code);
+            int wildcardStartLen = asset.Path.IndexOf('*');
+            int wildcardEndLen = asset.Path.Length - wildcardStartLen - 1;
+
+            if (type == "block")
+            {
+                foreach (var block in world.Blocks)
+                {
+                    if (block == null || block.IsMissing || block.Code == null) continue;
+                    if (WildcardUtil.Match(asset, block.Code))
+                    {
+                        string codeend = block.Code.Path.Substring(wildcardStartLen);
+                        string codepart = codeend.Substring(0, codeend.Length - wildcardEndLen);
+                        codes.Add(code.Replace("*", codepart));
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in world.Items)
+                {
+                    if (item == null || item.IsMissing || item.Code == null) continue;
+                    if (WildcardUtil.Match(asset, item.Code))
+                    {
+                        string codeend = item.Code.Path.Substring(wildcardStartLen);
+                        string codepart = codeend.Substring(0, codeend.Length - wildcardEndLen);
+                        codes.Add(code.Replace("*", codepart));
+                    }
+                }
+            }
+
+            return codes;
+        }
+
+        public static string FirstCodeMapping(string type, string code, IWorldAccessor world)
+        {
+            if (!code.Contains("*")) return code;
+
+            AssetLocation asset = new AssetLocation(code);
+            int wildcardStartLen = asset.Path.IndexOf('*');
+            int wildcardEndLen = asset.Path.Length - wildcardStartLen - 1;
+
+            if (type == "block")
+            {
+                foreach (var block in world.Blocks)
+                {
+                    if (block == null || block.IsMissing || block.Code == null) continue;
+                    if (WildcardUtil.Match(asset, block.Code))
+                    {
+                        string codeend = block.Code.Path.Substring(wildcardStartLen);
+                        string codepart = codeend.Substring(0, codeend.Length - wildcardEndLen);
+                        return code.Replace("*", codepart);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in world.Items)
+                {
+                    if (item == null || item.IsMissing || item.Code == null) continue;
+                    if (WildcardUtil.Match(asset, item.Code))
+                    {
+                        string codeend = item.Code.Path.Substring(wildcardStartLen);
+                        string codepart = codeend.Substring(0, codeend.Length - wildcardEndLen);
+                        return code.Replace("*", codepart);
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
