@@ -60,7 +60,7 @@
 	"item-cage-uranium-full": "Cage Uranium (Full)",
 	"item-cage-zinc-full": "Cage Zinc (Full)",
 
-    "error-too-much-hp": "Animal needs to be loosened (too many hp)",
+    "cage-mistake": "Animal needs to be loosened (too many hp)",
     "heldhelp-cage-full": "Contains: ",
     "heldhelp-cage-empty-bait": "Bait: ",
     "heldhelp-cage-throw-empty": "Throw to catch an animal",

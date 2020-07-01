@@ -60,7 +60,7 @@
     "item-cage-uranium-full": "Клетка из урана (Заполненная)",
     "item-cage-zinc-full": "Клетка из цинка (Заполненная)",
 
-    "error-too-much-hp": "Животное нужно ослабить (слишком много хп)",
+    "cage-mistake": "Ослабьте животное, чтобы повысить шанс",
     "heldhelp-cage-full": "Содержит: ",
     "heldhelp-cage-empty-bait": "Приманка: ",
     "heldhelp-pack-throw-empty": "Бросьте, чтобы поймать животное",
