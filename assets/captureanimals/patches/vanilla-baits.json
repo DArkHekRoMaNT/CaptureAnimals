@@ -1,0 +1,26 @@
+﻿[
+    { 
+        file: "game:entities/land/chicken-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:grain-*", chance: { min: 1, maxchancehealth: 1 } } }
+    },
+    { 
+        file: "game:entities/land/hare-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:vegetable-carrot", chance: { min: 1, maxchancehealth: 1 } } }
+    },
+    { 
+        file: "game:entities/land/pig-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:vegetable-turnip", chance: { min: 0.75, maxchancehealth: 0.5 } } }
+    },
+    { 
+        file: "game:entities/land/sheep-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:vegetable-cabbage", chance: { min: 0.75, maxchancehealth: 0.5 } } }
+    },
+    { 
+        file: "game:entities/land/fox-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:poultry-raw", chance: { min: 0.5, maxchancehealth: 0.5 } } }
+    },
+    { 
+        file: "game:entities/land/wolf-*", op: "add", path: "/attributes",
+        value: { captureanimals: { bait: "game:redmeat-raw", chance: { min: 0.5, maxchancehealth: 0.5 } } }
+    }
+]

@@ -128,6 +128,12 @@ namespace CaptureAnimals
                 string animal = inSlot.Itemstack.Attributes.GetString("capturename");
                 dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
             }
+
+            if (inSlot.Itemstack.Item.LastCodePart() == "empty" && inSlot.Itemstack.Collectible.Attributes["bait"].Exists)
+            {
+                string bait = inSlot.Itemstack.Collectible.Attributes["bait"].AsString();
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + bait);
+            }
         }
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
@@ -137,10 +143,10 @@ namespace CaptureAnimals
                 return new WorldInteraction[] {
                     new WorldInteraction()
                     {
-                        ActionLangCode =CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-empty",
-                        MouseButton = EnumMouseButton.Right,
+                        ActionLangCode = CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-empty",
+                        MouseButton = EnumMouseButton.Right
                     }
-                }.Append(base.GetHeldInteractionHelp(inSlot));
+                };
             }
             else if (inSlot.Itemstack.Item.LastCodePart() == "full")
             {
@@ -148,9 +154,9 @@ namespace CaptureAnimals
                     new WorldInteraction()
                     {
                         ActionLangCode = CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-full",
-                        MouseButton = EnumMouseButton.Right,
+                        MouseButton = EnumMouseButton.Right
                     }
-                }.Append(base.GetHeldInteractionHelp(inSlot));
+                };
             }
             else return base.GetHeldInteractionHelp(inSlot);
         }

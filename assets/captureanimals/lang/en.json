@@ -62,6 +62,7 @@
 
     "error-too-much-hp": "Animal needs to be loosened (too many hp)",
     "heldhelp-cage-full": "Contains: ",
+    "heldhelp-cage-empty-bait": "Bait: ",
     "heldhelp-cage-throw-empty": "Throw to catch an animal",
     "heldhelp-cage-throw-full": "Throw to release an animal"
 }

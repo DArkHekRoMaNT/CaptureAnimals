@@ -62,6 +62,7 @@
 
     "error-too-much-hp": "Животное нужно ослабить (слишком много хп)",
     "heldhelp-cage-full": "Содержит: ",
+    "heldhelp-cage-empty-bait": "Приманка: ",
     "heldhelp-pack-throw-empty": "Бросьте, чтобы поймать животное",
     "heldhelp-pack-throw-full": "Бросьте, чтобы отпустить животное"
 }

@@ -25,16 +25,17 @@
     creativeinventory: { "general": ["*"], "items": ["*"], "tools": ["*"] },
     maxstacksize: 1,
     attributes: {
-        capture_name: "undefined",
+        capturename: "undefined",
         breakchance: 0.25,
         defaultchance: { min: 0.01, maxchancehealth: 0.10 },
-        baits: {
+        oldbaits: {
             "game:creature-chicken-*": { bait: "game:grain-*", chance: { min: 1, maxchancehealth: 1 } },
             "game:creature-hare-*": { bait: "game:vegetable-carrot", chance: { min: 1, maxchancehealth: 1 } },
             "game:creature-pig-*": { bait: "game:vegetable-turnip", chance: { min: 0.75, maxchancehealth: 0.5 } },
             "game:creature-sheep-*": { bait: "game:vegetable-cabbage", chance: { min: 0.75, maxchancehealth: 0.5 } },
             "game:creature-fox-*": { bait: "game:poultry-raw", chance: { min: 0.5, maxchancehealth: 0.5 } },
             "game:creature-wolf-*": { bait: "game:redmeat-raw", chance: { min: 0.5, maxchancehealth: 0.5 } }
+        }
     },
     tpHandTransform: {
         translation: { x: -0.9, y: -1.5, z: -1.1 },
