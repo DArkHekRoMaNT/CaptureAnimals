@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Vintagestory.API;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
+using Vintagestory.API.Datastructures;
 using Vintagestory.API.Server;
 
 namespace CaptureAnimals
@@ -35,32 +40,57 @@ namespace CaptureAnimals
 
         public void AddRecipes()
         {
-            Item cage = api.World.GetItem(new AssetLocation(CaptureAnimals.MOD_ID + ":cage-copper-empty"));
-            JsonObject[] baits = cage.Attributes["baits"].AsArray();
-
-            foreach (var bait in baits)
+            List<EntityProperties> types = api.World.EntityTypes;
+            Dictionary<string, List<string>> baitForAnimals = new Dictionary<string, List<string>>(); // Key = bait, Value = animals
+            foreach (var type in types)
             {
-                api.World.Logger.Debug(bait.AsString());
-            }
+                if (type.Class == "EntityAgent" && type.Attributes != null)
+                {
+                    if (type.Attributes[CaptureAnimals.MOD_ID]["bait"].Exists &&
+                        type.Attributes[CaptureAnimals.MOD_ID]["chance"].Exists &&
+                        type.Attributes[CaptureAnimals.MOD_ID]["chance"]["min"].Exists &&
+                        type.Attributes[CaptureAnimals.MOD_ID]["chance"]["maxchancehealth"].Exists)
+                    {
+                        string bait = type.Attributes[CaptureAnimals.MOD_ID]["bait"].AsString();
+                        List<string> animals = new List<string>
+                        {
+                            type.Code.Domain + type.Code.Path
+                        };
 
-            //foreach (var bait in baits) {
-            bool temp = true;
-            while(temp) {
-                temp = false;
-                AssetLocation loc = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-bait");
+                        if (baitForAnimals.ContainsKey(bait))
+                        {
+                            animals.AddRange(baitForAnimals[bait]);
+                            baitForAnimals[bait] = animals;
+                        }
+                        else
+                        {
+                            baitForAnimals.Add(bait, animals);
+                        }
+                    }
+                }
+            }        
+
+            foreach (var val in baitForAnimals) {
+                AssetLocation loc = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-bait-" + val.Key.Replace(':', '-'));
+
+                AssetLocation asset = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-copper-empty");
+                ItemStack output = new ItemStack(api.World.GetItem(asset));
+                output.Attributes.SetString("bait", val.Key);
+                output.Attributes.SetString("animals", Util.ListStrToStr(val.Value));
+
                 GridRecipe recipe = new GridRecipe
                 {
-                    IngredientPattern = "C,B",
+                    IngredientPattern = "CB",
                     Ingredients = new Dictionary<string, CraftingRecipeIngredient>(),
-                    Width = 1,
-                    Height = 2,
+                    Width = 2,
+                    Height = 1,
                     Shapeless = true,
                     Output = new CraftingRecipeIngredient
                     {
                         Type = EnumItemClass.Item,
-                        Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-full")
-                    },
-                    Name = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-bait")
+                        Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
+                        Attributes = new JsonObject(output.Attributes.ToJsonToken())
+                    }
                 };
                 recipe.Ingredients.Add("C", new CraftingRecipeIngredient
                 {
@@ -71,7 +101,7 @@ namespace CaptureAnimals
                 recipe.Ingredients.Add("B", new CraftingRecipeIngredient
                 {
                     Type = EnumItemClass.Item,
-                    Code = new AssetLocation("game:vegetable-turnip"),
+                    Code = new AssetLocation(val.Key),
                     Name = "bait"
                 });
 
@@ -85,19 +115,17 @@ namespace CaptureAnimals
 
             foreach (var val in gridRecipes)
             {
-                LoadRecipe(val.Key, val.Value);
-                recipeQuantity++;
+                LoadRecipe(val.Key, val.Value, ref recipeQuantity);
             }
 
-            api.World.Logger.Event("{0} crafting recipes created by CaptureAnimals", recipeQuantity);
+            api.World.Logger.Event("{0} cage with bait recipes created by CaptureAnimals", recipeQuantity);
             api.World.Logger.StoryEvent(Lang.Get("Animal cages..."));
         }
 
 
-        public void LoadRecipe(AssetLocation loc, GridRecipe recipe)
+        public void LoadRecipe(AssetLocation loc, GridRecipe recipe, ref int recipeQuantity)
         {
             if (!recipe.Enabled) return;
-
             if (recipe.Name == null) recipe.Name = loc;
 
             Dictionary<string, string[]> nameToCodeMapping = recipe.GetNameToCodeMapping(api.World);
@@ -146,6 +174,7 @@ namespace CaptureAnimals
                 {
                     if (!subRecipe.ResolveIngredients(api.World)) continue;
                     api.RegisterCraftingRecipe(subRecipe);
+                    recipeQuantity++;
                 }
 
             }
@@ -153,9 +182,15 @@ namespace CaptureAnimals
             {
                 if (!recipe.ResolveIngredients(api.World)) return;
                 api.RegisterCraftingRecipe(recipe);
+                recipeQuantity++;
             }
 
         }
+
+        void HandlePredicate(EntityProperties obj)
+        {
+        }
+
 
         public void TestRecipe()
         {

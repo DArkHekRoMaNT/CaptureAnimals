@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -65,6 +69,25 @@ namespace CaptureAnimals
                 cp.ShowChatNotification(msg);
                 api.World.Logger.Chat(msg);
             }
+        }
+        public static void SendMessage(string msg, Entity playerEntity, int chatGroup = -1)
+        {
+            SendMessage(msg, playerEntity.Api, playerEntity, chatGroup);
+        }
+
+        private const char separator = ',';
+        public static string ListStrToStr(List<string> list) 
+        {
+            StringBuilder str = new StringBuilder();
+            foreach(var val in list)
+            {
+                str.Append(val + separator);
+            }
+            return str.ToString();
+        }
+        public static List<string> StrToListStr(string str)
+        {
+            return str.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
     }
 }

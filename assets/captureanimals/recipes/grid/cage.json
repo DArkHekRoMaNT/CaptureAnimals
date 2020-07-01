@@ -1,11 +1,11 @@
 ﻿{
-    ingredientPattern: "P,C",
+    ingredientPattern: "CP",
     ingredients: {
         "P": { type: "item", code: "game:resin" },
         "C": { type: "item", code: "cage-*-case", name: "type" }
     },
-    width: 1,
-    height: 2,
+    width: 2,
+    height: 1,
     shapeless: true,
     output: { type: "item", code: "cage-{type}-empty" }
 }
