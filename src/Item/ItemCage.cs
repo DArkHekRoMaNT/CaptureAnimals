@@ -129,10 +129,10 @@ namespace CaptureAnimals
                 dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
             }
 
-            if (inSlot.Itemstack.Item.LastCodePart() == "empty" && inSlot.Itemstack.Collectible.Attributes["bait"].Exists)
+            if (inSlot.Itemstack.Item.LastCodePart() == "empty" && inSlot.Itemstack.Attributes.HasAttribute("bait-code"))
             {
-                string bait = inSlot.Itemstack.Collectible.Attributes["bait"].AsString();
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + bait);
+                string bait = inSlot.Itemstack.Attributes.GetString("bait-code");
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + new AssetLocation(bait).GetName());
             }
         }
 

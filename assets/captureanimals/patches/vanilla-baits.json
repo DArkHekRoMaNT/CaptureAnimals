@@ -1,26 +1,26 @@
 ﻿[
     { 
         file: "game:entities/land/chicken-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:grain-*", chance: { min: 1, maxchancehealth: 1 } } }
+        value: { captureanimals: { type: "item", code: "game:grain-*", chance: 1, minhealth: 1 } }
     },
     { 
         file: "game:entities/land/hare-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:vegetable-carrot", chance: { min: 1, maxchancehealth: 1 } } }
+        value: { captureanimals: { type: "item", code: "game:vegetable-carrot", chance: 1, minhealth: 1 } }
     },
     { 
         file: "game:entities/land/pig-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:vegetable-turnip", chance: { min: 0.75, maxchancehealth: 0.5 } } }
+        value: { captureanimals: { type: "item", code: "game:vegetable-turnip", chance: 0.75, minhealth: 0.5 } }
     },
     { 
         file: "game:entities/land/sheep-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:vegetable-cabbage", chance: { min: 0.75, maxchancehealth: 0.5 } } }
+        value: { captureanimals: { type: "item", code: "game:vegetable-cabbage", chance: 0.75, minhealth: 0.5 } }
     },
     { 
         file: "game:entities/land/fox-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:poultry-raw", chance: { min: 0.5, maxchancehealth: 0.5 } } }
+        value: { captureanimals: { type: "item", code: "game:poultry-raw", chance: 0.5, minhealth: 0.5 } }
     },
     { 
         file: "game:entities/land/wolf-*", op: "add", path: "/attributes",
-        value: { captureanimals: { bait: "game:redmeat-raw", chance: { min: 0.5, maxchancehealth: 0.5 } } }
+        value: { captureanimals: { type: "item", code: "game:redmeat-raw", chance: 0.5, minhealth: 0.5 } }
     }
 ]
