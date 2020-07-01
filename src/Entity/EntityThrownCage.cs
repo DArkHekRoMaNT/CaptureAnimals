@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -21,6 +22,8 @@ namespace CaptureAnimals
         public Entity FiredBy;
         internal float Damage;
         public ItemStack ProjectileStack;
+
+        Random random = new Random();
 
         public override bool IsInteractable
         {
@@ -118,13 +121,29 @@ namespace CaptureAnimals
 
                     if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
                     {
-                        float chanceMin = ProjectileStack.Collectible.Attributes["defaultchance"]["min"].AsFloat();
-                        float maxChanceHealth = ProjectileStack.Collectible.Attributes["defaultchance"]["maxchancehealth"].AsFloat();
+                        float breakChance = ProjectileStack.Collectible.Attributes["breakchance"].AsFloat();
+                        float chance = ProjectileStack.Collectible.Attributes["defaultchance"]["chance"].AsFloat();
+                        float minHealth = ProjectileStack.Collectible.Attributes["defaultchance"]["minhealth"].AsFloat();
 
-                        string msg = entity.Properties.Code.GetName();
-                        Util.SendMessage(msg, FiredBy);
+                        if (ProjectileStack.Attributes.HasAttribute("bait-chance") &&
+                            ProjectileStack.Attributes.HasAttribute("bait-minhealth") &&
+                            ProjectileStack.Attributes.HasAttribute("bait-animals"))
+                        {
+                            string animals = ProjectileStack.Attributes.GetString("bait-animals");
+                            if(animals.Contains(entity.Code.ToString())) {
+                                chance = ProjectileStack.Attributes.GetFloat("bait-chance");
+                                minHealth = ProjectileStack.Attributes.GetFloat("bait-minhealth");
+                            }
+                        }
 
-                        if (behavior.Health / behavior.MaxHealth <= 1 || behavior.Health <= 1)
+                        if(!(random.Next(0, 100) / 100f <= (chance * (1 + 2*(behavior.Health / behavior.MaxHealth)))))
+                        {
+                            if(random.Next(0, 100) / 100F <= breakChance)
+                            {
+                                Die();
+                            }
+                        }
+                        else if ((behavior.Health / behavior.MaxHealth) <= minHealth)
                         {
                             AssetLocation location = ProjectileStack.Item?.CodeWithVariant("type", "full");
                             ItemStack full = new ItemStack(Api.World.GetItem(location));
@@ -139,7 +158,7 @@ namespace CaptureAnimals
                         }
                         else
                         {
-                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":error-too-much-hp"), Api, FiredBy);
+                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-mistake"), Api, FiredBy);
                             Api.World.SpawnItemEntity(ProjectileStack, entity.Pos.XYZ);
                             Die();
                         }
@@ -167,7 +186,7 @@ namespace CaptureAnimals
             CollisionBox.X2 = 0.5f;
             CollisionBox.Z1 = -0.5f;
             CollisionBox.Z2 = 0.5f;
-            CollisionBox.Y1 = 0f;
+            CollisionBox.Y1 = -0.5f;
             CollisionBox.Y2 = 0.5f;
         }
 

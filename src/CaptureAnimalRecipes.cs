@@ -138,15 +138,14 @@ namespace CaptureAnimals
 
             foreach (var val in gridRecipes)
             {
-                LoadRecipe(val.Key, val.Value);
-                recipeQuantity++;
+                LoadRecipe(val.Key, val.Value, ref recipeQuantity);
             }
 
             api.World.Logger.Event("{0} cage-with-bait recipes created by CaptureAnimals", recipeQuantity);
             api.World.Logger.StoryEvent(Lang.Get("Animal cages..."));
         }
 
-        public void LoadRecipe(AssetLocation loc, GridRecipe recipe)
+        public void LoadRecipe(AssetLocation loc, GridRecipe recipe, ref int recipeQuantity)
         {
             if (!recipe.Enabled) return;
             if (recipe.Name == null) recipe.Name = loc;
@@ -197,6 +196,7 @@ namespace CaptureAnimals
                 {
                     if (!subRecipe.ResolveIngredients(api.World)) continue;
                     api.RegisterCraftingRecipe(subRecipe);
+                    recipeQuantity++;
                 }
 
             }
@@ -204,6 +204,7 @@ namespace CaptureAnimals
             {
                 if (!recipe.ResolveIngredients(api.World)) return;
                 api.RegisterCraftingRecipe(recipe);
+                recipeQuantity++;
             }
 
         }

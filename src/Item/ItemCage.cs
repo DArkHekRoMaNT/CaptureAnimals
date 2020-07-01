@@ -131,8 +131,16 @@ namespace CaptureAnimals
 
             if (inSlot.Itemstack.Item.LastCodePart() == "empty" && inSlot.Itemstack.Attributes.HasAttribute("bait-code"))
             {
-                string bait = inSlot.Itemstack.Attributes.GetString("bait-code");
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + new AssetLocation(bait).GetName());
+                string name, bait = inSlot.Itemstack.Attributes.GetString("bait-code");
+                if (inSlot.Itemstack.Attributes.GetString("bait-type") == "item")
+                {
+                    name = new ItemStack(api.World.GetItem(new AssetLocation(bait))).GetName();
+                }
+                else
+                {
+                    name = new ItemStack(api.World.GetBlock(new AssetLocation(bait))).GetName();
+                }
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + name);
             }
         }
 
