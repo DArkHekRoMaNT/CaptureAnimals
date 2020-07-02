@@ -60,9 +60,14 @@
 	"item-cage-uranium-full": "Cage Uranium (Full)",
 	"item-cage-zinc-full": "Cage Zinc (Full)",
 
-    "cage-mistake": "Animal needs to be loosened (too many hp)",
+    "cage-mistake": "Failed to capture the animal (weakened animals are easier to capture)",
+    "cage-broken": "Cage broken...",
+    "cage-captured": "Animal captured",
     "heldhelp-cage-full": "Contains: ",
-    "heldhelp-cage-empty-bait": "Bait: ",
+    "heldhelp-cage-empty-bait-name": "Bait: ",
+    "heldhelp-cage-empty-bait-chance": "Chance: ",
+    "heldhelp-cage-empty-bait-minhealth": "Min HP: ",
+    "heldhelp-cage-empty-bait-animals": "For: ",
     "heldhelp-cage-throw-empty": "Throw to catch an animal",
     "heldhelp-cage-throw-full": "Throw to release an animal"
 }

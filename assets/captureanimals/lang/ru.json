@@ -60,9 +60,14 @@
     "item-cage-uranium-full": "Клетка из урана (Заполненная)",
     "item-cage-zinc-full": "Клетка из цинка (Заполненная)",
 
-    "cage-mistake": "Ослабьте животное, чтобы повысить шанс",
+    "cage-mistake": "Неудалось поймать животное (ослабленных животных ловить легче)",
+    "cage-broken": "Клетка сломалась...",
+    "cage-captured": "Животное захвачено",
     "heldhelp-cage-full": "Содержит: ",
-    "heldhelp-cage-empty-bait": "Приманка: ",
+    "heldhelp-cage-empty-bait-name": "Приманка: ",
+    "heldhelp-cage-empty-bait-chance": "Шанс: ",
+    "heldhelp-cage-empty-bait-minhealth": "Мин ОЗ: ",
+    "heldhelp-cage-empty-bait-animals": "Для: ",
     "heldhelp-pack-throw-empty": "Бросьте, чтобы поймать животное",
     "heldhelp-pack-throw-full": "Бросьте, чтобы отпустить животное"
 }

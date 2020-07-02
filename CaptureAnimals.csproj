@@ -103,7 +103,7 @@
     <None Include="assets\captureanimals\shapes\item\cage-case.json" />
     <None Include="assets\captureanimals\lang\en.json" />
     <None Include="assets\captureanimals\lang\ru.json" />
-    <None Include="assets\captureanimals\patches\vanilla-baits.json" />
+    <None Include="assets\captureanimals\patches\vanilla-creatures.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

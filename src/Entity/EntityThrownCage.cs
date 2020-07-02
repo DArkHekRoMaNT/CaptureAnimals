@@ -42,8 +42,6 @@ namespace CaptureAnimals
             }
         }
 
-
-        //TODO: Убрать уничтожение при попадании в стену. Проверить хитбокс, т.к. нельзя попасть в дырку 1х1
         public override void OnGameTick(float dt)
         {
             base.OnGameTick(dt);
@@ -75,12 +73,6 @@ namespace CaptureAnimals
                     {
                         pos.Motion.X = motionBeforeCollide.X * 0.8f;
                         pos.Motion.Z = motionBeforeCollide.Z * 0.8f;
-
-                        if (strength > 0.08f && World.Rand.NextDouble() > 0.2f)
-                        {
-                            World.SpawnCubeParticles(LocalPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
-                            Die();
-                        }
                     }
 
                     if (CollidedVertically && motionBeforeCollide.Y <= 0)
@@ -110,7 +102,7 @@ namespace CaptureAnimals
 
                 if (entity != null && (entity as EntityPlayer) == null && entity.Alive)
                 {
-                    bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy == null ? this : FiredBy, Type = EnumDamageType.BluntAttack }, Damage);
+                    bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy ?? (this), Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.LocalPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
 
@@ -131,19 +123,23 @@ namespace CaptureAnimals
                         {
                             string animals = ProjectileStack.Attributes.GetString("bait-animals");
                             if(animals.Contains(entity.Code.ToString())) {
-                                chance = ProjectileStack.Attributes.GetFloat("bait-chance");
-                                minHealth = ProjectileStack.Attributes.GetFloat("bait-minhealth");
+                                chance = float.Parse(ProjectileStack.Attributes.GetString("bait-chance"));
+                                minHealth = float.Parse(ProjectileStack.Attributes.GetString("bait-minhealth"));
                             }
                         }
 
-                        if(!(random.Next(0, 100) / 100f <= (chance * (1 + 2*(behavior.Health / behavior.MaxHealth)))))
+                        bool isMistake = (random.Next(0, 100) / 100f > chance);
+                        bool isWeakAnimal = (behavior.Health / behavior.MaxHealth) <= minHealth;
+                        if (isMistake && !isWeakAnimal)
                         {
                             if(random.Next(0, 100) / 100F <= breakChance)
                             {
+                                Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-broken"), Api, FiredBy);
                                 Die();
+                                return;
                             }
                         }
-                        else if ((behavior.Health / behavior.MaxHealth) <= minHealth)
+                        if (isWeakAnimal || !isMistake)
                         {
                             AssetLocation location = ProjectileStack.Item?.CodeWithVariant("type", "full");
                             ItemStack full = new ItemStack(Api.World.GetItem(location));
@@ -153,13 +149,15 @@ namespace CaptureAnimals
 
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
+
+                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-captured"), Api, FiredBy);
                             entity.Die(EnumDespawnReason.Removed);
                             Die();
                         }
                         else
                         {
                             Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-mistake"), Api, FiredBy);
-                            Api.World.SpawnItemEntity(ProjectileStack, entity.Pos.XYZ);
+                            Api.World.SpawnItemEntity(ProjectileStack, ServerPos.XYZ);
                             Die();
                         }
                     }
@@ -182,12 +180,12 @@ namespace CaptureAnimals
             double speed = pos.Motion.Length();
 
             if (CollisionBox == null) return;
-            CollisionBox.X1 = -0.5f;
-            CollisionBox.X2 = 0.5f;
-            CollisionBox.Z1 = -0.5f;
-            CollisionBox.Z2 = 0.5f;
-            CollisionBox.Y1 = -0.5f;
-            CollisionBox.Y2 = 0.5f;
+            CollisionBox.X1 = -0.125f;
+            CollisionBox.X2 = 0.125f;
+            CollisionBox.Z1 = -0.125f;
+            CollisionBox.Z2 = 0.125f;
+            CollisionBox.Y1 = -0.125f;
+            CollisionBox.Y2 = 0.125f;
         }
 
 
