@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json.Linq;
 using Vintagestory.API;
-using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
-using Vintagestory.API.Datastructures;
 using Vintagestory.API.Server;
-using Vintagestory.API.Util;
 
 namespace CaptureAnimals
 {
@@ -69,16 +65,9 @@ namespace CaptureAnimals
                             minHealth = type.Attributes[CaptureAnimals.MOD_ID]["minhealth"].AsFloat(),
                         };
 
-                        string animal = type.Code.Domain + type.Code.Path;
-
-                        if (baitForAnimals.ContainsKey(bait))
-                        {
-                            baitForAnimals[bait].Add(animal);
-                        }
-                        else
-                        {
-                            baitForAnimals.Add(bait, new List<string> { animal });
-                        }
+                        string animal = type.Code.Domain + AssetLocation.LocationSeparator + type.Code.Path;
+                        if (baitForAnimals.ContainsKey(bait)) baitForAnimals[bait].Add(animal);
+                        else baitForAnimals.Add(bait, new List<string> { animal });
                     }
                 }
             }
@@ -91,43 +80,50 @@ namespace CaptureAnimals
 
                 foreach (var code in codes)
                 {
-                    string postfix = val.Key.type + "-" + code.Replace(':', '-');
-                    AssetLocation recipeName = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-with-" + postfix);
-
-                    ItemStack output = new ItemStack(api.World.GetItem(cageLoc));
-                    output.Attributes.SetString("animals", Util.ListStrToStr(val.Value));
-                    output.Attributes.SetString("bait-type", val.Key.type);
-                    output.Attributes.SetString("bait-code", code);
-                    output.Attributes.SetFloat("bait-chance", val.Key.chance);
-                    output.Attributes.SetFloat("bait-minhealth", val.Key.minHealth);
-
-                    GridRecipe recipe = new GridRecipe
+                    try
                     {
-                        IngredientPattern = "CB",
-                        Ingredients = new Dictionary<string, CraftingRecipeIngredient>(),
-                        Width = 2,
-                        Height = 1,
-                        Shapeless = true,
-                        Output = new CraftingRecipeIngredient
+                        string postfix = val.Key.type + "-" + code.Replace(AssetLocation.LocationSeparator, '-');
+                        AssetLocation recipeName = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-with-" + postfix);
+
+                        ItemStack output = new ItemStack(api.World.GetItem(cageLoc));
+                        output.Attributes.SetString("bait-chance", val.Key.chance.ToString());
+                        output.Attributes.SetString("bait-minhealth", val.Key.minHealth.ToString());
+                        output.Attributes.SetString("bait-animals", Util.ListStrToStr(val.Value));
+                        output.Attributes.SetString("bait-type", val.Key.type);
+                        output.Attributes.SetString("bait-code", code);
+
+                        GridRecipe recipe = new GridRecipe
+                        {
+                            IngredientPattern = "CB",
+                            Ingredients = new Dictionary<string, CraftingRecipeIngredient>(),
+                            Width = 2,
+                            Height = 1,
+                            Shapeless = true,
+                            Output = new CraftingRecipeIngredient
+                            {
+                                Type = EnumItemClass.Item,
+                                Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
+                                Attributes = new JsonObject(JToken.Parse(output.Attributes.ToJsonToken()))
+                            }
+                        };
+                        recipe.Ingredients.Add("C", new CraftingRecipeIngredient
                         {
                             Type = EnumItemClass.Item,
-                            Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
-                            Attributes = new JsonObject(JToken.Parse(output.Attributes.ToJsonToken()))
-                        }
-                    };
-                    recipe.Ingredients.Add("C", new CraftingRecipeIngredient
-                    {
-                        Type = EnumItemClass.Item,
-                        Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
-                        Name = "type"
-                    });
-                    recipe.Ingredients.Add("B", new CraftingRecipeIngredient
-                    {
-                        Type = EnumItemClass.Item,
-                        Code = new AssetLocation(val.Key.code)
-                    });
+                            Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
+                            Name = "type"
+                        });
+                        recipe.Ingredients.Add("B", new CraftingRecipeIngredient
+                        {
+                            Type = EnumItemClass.Item,
+                            Code = new AssetLocation(val.Key.code)
+                        });
 
-                    gridRecipes.Add(recipeName, recipe);
+                        gridRecipes.Add(recipeName, recipe);
+                    }
+                    catch(ArgumentException)
+                    {
+                        api.World.Logger.Error("Bait with other chances. Ignored");
+                    }
                 }
             }
         }

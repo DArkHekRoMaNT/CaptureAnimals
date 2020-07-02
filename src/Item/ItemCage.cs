@@ -1,10 +1,10 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
-using Vintagestory.API.Util;
 
 namespace CaptureAnimals
 {
@@ -118,7 +118,6 @@ namespace CaptureAnimals
             byEntity.StartAnimation("throw");
         }
 
-
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
@@ -128,19 +127,35 @@ namespace CaptureAnimals
                 string animal = inSlot.Itemstack.Attributes.GetString("capturename");
                 dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
             }
-
-            if (inSlot.Itemstack.Item.LastCodePart() == "empty" && inSlot.Itemstack.Attributes.HasAttribute("bait-code"))
+            else if (inSlot.Itemstack.Item.LastCodePart() == "empty" &&
+                inSlot.Itemstack.Attributes.HasAttribute("bait-code") &&
+                inSlot.Itemstack.Attributes.HasAttribute("bait-type") &&
+                inSlot.Itemstack.Attributes.HasAttribute("bait-chance") &&
+                inSlot.Itemstack.Attributes.HasAttribute("bait-minhealth") &&
+                inSlot.Itemstack.Attributes.HasAttribute("bait-animals"))
             {
-                string name, bait = inSlot.Itemstack.Attributes.GetString("bait-code");
-                if (inSlot.Itemstack.Attributes.GetString("bait-type") == "item")
+                string type = inSlot.Itemstack.Attributes.GetString("bait-type");
+                string bait = Util.GetLang(type, inSlot.Itemstack.Attributes.GetString("bait-code"));
+                float chance = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-chance") ?? "0");
+                float minHealth = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-minhealth") ?? "0");
+                List<string> animals = Util.StrToListStr(inSlot.Itemstack.Attributes.GetString("bait-animals"));
+                for(int i=0; i<animals.Count; i++)
                 {
-                    name = new ItemStack(api.World.GetItem(new AssetLocation(bait))).GetName();
+                    animals[i] = Util.GetLang(type, animals[i], Util.GetLangType.Entity);
                 }
-                else
-                {
-                    name = new ItemStack(api.World.GetBlock(new AssetLocation(bait))).GetName();
-                }
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait") + name);
+
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-name") + bait);
+                dsc.Append(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-animals") + Util.ListStrToStr(animals));
+            }
+            else if (inSlot.Itemstack.Item.LastCodePart() == "empty")
+            {
+                float chance = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["chance"].AsFloat();
+                float minHealth = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["minhealth"].AsFloat();
+
+                dsc.Append(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
+                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
             }
         }
 

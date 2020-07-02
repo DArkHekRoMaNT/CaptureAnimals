@@ -76,7 +76,7 @@ namespace CaptureAnimals
             SendMessage(msg, playerEntity.Api, playerEntity, chatGroup);
         }
 
-        private const string separator = ", ";
+        public const string separator = ", ";
         public static string ListStrToStr(List<string> list) 
         {
             return String.Join(separator, list.ToArray());
@@ -161,6 +161,28 @@ namespace CaptureAnimals
             }
 
             return null;
+        }
+
+        public enum GetLangType
+        {
+            ItemOrBlock = 0,
+            Entity = 1
+        }
+        public static string GetLang(string type, string codeAndPath, GetLangType getLangType = GetLangType.ItemOrBlock)
+        {
+            int center = codeAndPath.IndexOf(AssetLocation.LocationSeparator);
+            string domain = codeAndPath.Substring(0, center);
+            string path = codeAndPath.Substring(center + 1, codeAndPath.Length - center - 1);
+
+            switch(getLangType)
+            {
+                case GetLangType.ItemOrBlock: 
+                    return Lang.GetMatching(domain + AssetLocation.LocationSeparator + type + "-" + path);
+                case GetLangType.Entity:
+                    return Lang.GetMatching(domain + AssetLocation.LocationSeparator + "item-creature-" + path);
+                default:
+                    return null;
+            }
         }
     }
 }
