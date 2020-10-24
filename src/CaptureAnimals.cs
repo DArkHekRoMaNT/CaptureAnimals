@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Vintagestory.API.Common;
-using Vintagestory.API.Server;
+
+[assembly: ModInfo("CaptureAnimals")]
 
 namespace CaptureAnimals
 {
@@ -14,21 +14,10 @@ namespace CaptureAnimals
         {
             base.Start(api);
 
-            string[] items = {
-                "ItemCage"
-            };
-            string[] entities = {
-                "EntityThrownCage"
-            };
-
-            foreach (string e in items)
-            {
-                api.RegisterItemClass(e, Type.GetType(MOD_SPACE + "." + e));
-            }
-            foreach (string e in entities)
-            {
-                api.RegisterEntity(e, Type.GetType(MOD_SPACE + "." + e));
-            }
+            api.RegisterItemClass("ItemCage", Type.GetType(MOD_SPACE + ".ItemCage"));
+            api.RegisterBlockClass("BlockCage", Type.GetType(MOD_SPACE + ".BlockCage"));
+            api.RegisterEntity("EntityThrownCage", Type.GetType(MOD_SPACE + ".EntityThrownCage"));
+            api.RegisterBlockEntityClass("BlockEntityCage", Type.GetType(MOD_SPACE + ".BlockEntityCage"));
         }
     }
 }

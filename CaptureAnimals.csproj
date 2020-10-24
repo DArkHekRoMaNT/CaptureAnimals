@@ -1,114 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{a7b06fe8-222a-44a2-96dd-a82da7c52460}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CaptureAnimals</RootNamespace>
-    <AssemblyName>captureanimals</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net452</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\captureanimals</OutputPath>
-    <IntermediateOutputPath>..\..\obj\Debug\packinganimals\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\captureanimals</OutputPath>
-    <IntermediateOutputPath>..\..\obj\Release\packinganimals\</IntermediateOutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="System" />
-
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-
-
-    <Reference Include="Microsoft.CSharp" />
-
-    <Reference Include="System.Data" />
-
-    <Reference Include="System.Net.Http" />
-
-    <Reference Include="System.Xml" />
-
     <Reference Include="VintagestoryAPI">
-      <HintPath>/home/dark/ApplicationData/vintagestory/VintagestoryAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
     </Reference>
-
-    <Reference Include="VSSurvivalMod">
-      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSSurvivalMod.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-
     <Reference Include="VSEssentials">
-      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSEssentials.dll</HintPath>
-      <Private>False</Private>
+        <HintPath>$(VINTAGE_STORY)/Mods/VSEssentials.dll</HintPath>
     </Reference>
-
-    <Reference Include="VSCreativeMod">
-      <HintPath>/home/dark/ApplicationData/vintagestory/Mods\VSCreativeMod.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-
     <Reference Include="Newtonsoft.Json">
-      <HintPath>/home/dark/ApplicationData/vintagestory/Lib\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(VINTAGE_STORY)/Lib/Newtonsoft.Json.dll</HintPath>
     </Reference>
-    
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\" />
-    <Folder Include="src\Item\" />
-    <Folder Include="assets\captureanimals\itemtypes\" />
-    <Folder Include="src\Entity\" />
-    <Folder Include="assets\captureanimals\shapes\item\" />
-    <Folder Include="assets\captureanimals\recipes\" />
-    <Folder Include="assets\captureanimals\recipes\smithing\" />
-    <Folder Include="assets\captureanimals\recipes\grid\" />
-    <Folder Include="assets\captureanimals\patches\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="src\CaptureAnimals.cs" />
-    <Compile Include="src\Item\ItemCage.cs" />
-    <Compile Include="src\Entity\EntityThrownCage.cs" />
-    <Compile Include="src\Utility.cs" />
-    <Compile Include="src\CaptureAnimalRecipes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="modinfo.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\captureanimals\entities\throwncage.json" />
-    <None Include="assets\captureanimals\textures\item\cage.png" />
-    <None Include="assets\captureanimals\shapes\item\cage.json" />
-    <None Include="assets\captureanimals\itemtypes\cage.json" />
-    <None Include="assets\captureanimals\recipes\smithing\cage-case.json" />
-    <None Include="assets\captureanimals\recipes\grid\cage.json" />
-    <None Include="assets\captureanimals\shapes\item\cage-case.json" />
-    <None Include="assets\captureanimals\lang\en.json" />
-    <None Include="assets\captureanimals\lang\ru.json" />
-    <None Include="assets\captureanimals\patches\vanilla-creatures.json" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-
-    </PostBuildEvent>
-  </PropertyGroup>
+  
+  <Target Name="Copy" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Debug'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods" />
+    <Copy SourceFiles="$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(VINTAGE_STORY_DATA)/Mods" />
+  </Target>
 </Project>

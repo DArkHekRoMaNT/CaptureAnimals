@@ -49,12 +49,10 @@ namespace CaptureAnimals
                 return entity;
             }
         }
-        public static void SendMessage(string msg, ICoreAPI api, Entity playerEntity = null, int chatGroup = -1)
+        public static void SendMessage(string msg, ICoreAPI api, IPlayer player, int chatGroup = -1)
         {
             if (chatGroup == -1) chatGroup = GlobalConstants.InfoLogChatGroup;
-
-            IPlayer player = api.World.PlayerByUid((playerEntity as EntityPlayer)?.PlayerUID);
-            if(player == null)
+            if (player == null)
             {
                 api.World.Logger.Chat(msg);
             }
@@ -71,9 +69,22 @@ namespace CaptureAnimals
                 api.World.Logger.Chat(msg);
             }
         }
+        public static void SendMessage(string msg, ICoreAPI api, Entity playerEntity = null, int chatGroup = -1)
+        {
+            IPlayer player = api.World.PlayerByUid((playerEntity as EntityPlayer)?.PlayerUID);
+            SendMessage(msg, api, player, chatGroup);
+        }
         public static void SendMessage(string msg, Entity playerEntity, int chatGroup = -1)
         {
             SendMessage(msg, playerEntity.Api, playerEntity, chatGroup);
+        }
+        public static void SendMessageAll(string msg, ICoreAPI api, int chatGroup = -1)
+        {
+            IPlayer[] players = api.World.AllPlayers;
+            foreach(IPlayer player in players)
+            {
+                SendMessage(msg, api, player, chatGroup);
+            }
         }
 
         public const string separator = ", ";
@@ -183,6 +194,15 @@ namespace CaptureAnimals
                 default:
                     return null;
             }
+        }
+        public static Vec3d HumanCoord(Vec3d trueCoord, ICoreAPI api)
+        {
+            if (trueCoord == null) return null;
+
+            double x = trueCoord.X - api.World.DefaultSpawnPosition.XYZ.Z;
+            double y = trueCoord.Y;
+            double z = trueCoord.Z - api.World.DefaultSpawnPosition.XYZ.Z;
+            return new Vec3d(x, y, z);
         }
     }
 }

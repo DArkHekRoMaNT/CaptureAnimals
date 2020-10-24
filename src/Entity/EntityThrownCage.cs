@@ -47,7 +47,7 @@ namespace CaptureAnimals
             base.OnGameTick(dt);
             if (OnGround || ShouldDespawn) return;
 
-            EntityPos pos = LocalPos;
+            EntityPos pos = SidedPos;
 
             stuck = Collided;
             if (stuck)
@@ -90,7 +90,8 @@ namespace CaptureAnimals
 
             if (World is IServerWorldAccessor && ProjectileStack.Item?.LastCodePart() == "empty")
             {
-                Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) => {
+                Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) =>
+                {
                     if (e.EntityId == this.EntityId || (FiredBy != null && e.EntityId == FiredBy.EntityId && World.ElapsedMilliseconds - msLaunch < 500) || !e.IsInteractable)
                     {
                         return false;
@@ -104,7 +105,7 @@ namespace CaptureAnimals
                 {
                     bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy ?? (this), Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
-                    World.SpawnCubeParticles(entity.LocalPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
+                    World.SpawnCubeParticles(entity.SidedPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
 
                     if (FiredBy is EntityPlayer && didDamage)
                     {
@@ -122,7 +123,8 @@ namespace CaptureAnimals
                             ProjectileStack.Attributes.HasAttribute("bait-animals"))
                         {
                             string animals = ProjectileStack.Attributes.GetString("bait-animals");
-                            if(animals.Contains(entity.Code.ToString())) {
+                            if (animals.Contains(entity.Code.ToString()))
+                            {
                                 chance = float.Parse(ProjectileStack.Attributes.GetString("bait-chance"));
                                 minHealth = float.Parse(ProjectileStack.Attributes.GetString("bait-minhealth"));
                             }
@@ -132,7 +134,7 @@ namespace CaptureAnimals
                         bool isWeakAnimal = (behavior.Health / behavior.MaxHealth) <= minHealth;
                         if (isMistake && !isWeakAnimal)
                         {
-                            if(random.Next(0, 100) / 100F <= breakChance)
+                            if (random.Next(0, 100) / 100F <= breakChance)
                             {
                                 Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-broken"), Api, FiredBy);
                                 Die();
@@ -205,7 +207,7 @@ namespace CaptureAnimals
             if (ProjectileStack.Item?.LastCodePart() != "full") return;
 
             Entity entity = Util.GetEntityFromAttributes(ProjectileStack, "capture", Api.World);
-            if(entity != null)
+            if (entity != null)
             {
                 entity.Pos.SetPos(Pos);
                 entity.ServerPos.SetPos(ServerPos);
@@ -225,7 +227,7 @@ namespace CaptureAnimals
         {
             if (motionBeforeCollide.Y <= 0)
             {
-                LocalPos.Motion.Y = GameMath.Clamp(motionBeforeCollide.Y * -0.5f, -0.1f, 0.1f);
+                SidedPos.Motion.Y = GameMath.Clamp(motionBeforeCollide.Y * -0.5f, -0.1f, 0.1f);
                 PositionBeforeFalling.Y = Pos.Y + 1;
             }
 

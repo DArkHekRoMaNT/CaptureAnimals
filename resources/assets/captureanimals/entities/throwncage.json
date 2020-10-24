@@ -1,0 +1,43 @@
+{
+  "code": "throwncage",
+  "class": "EntityThrownCage",
+  "hitboxSize": { "x": 0.25, "y": 0.25 },
+  "variantgroups": [
+    { "code": "metal", "loadFromProperties": "game:block/metal" },
+    { "code": "type", "states": ["empty", "full"] }
+  ],
+  "client": {
+    "renderer": "Shape",
+    "shape": { "base": "item/cage" },
+    "texturesByType": {
+      "*-empty": {
+        "core": { "base": "game:item/tool/material/blackbronze" },
+        "case": { "base": "game:block/metal/plate/{metal}" }
+      },
+      "*-full": {
+        "core": { "base": "game:item/tool/material/gold" },
+        "case": { "base": "game:block/metal/plate/{metal}" }
+      }
+    },
+    "size": 0.25,
+    "behaviors": [
+      { "code": "passivephysics" },
+      { "code": "interpolateposition" },
+      { "code": "floatupwhenstuck" }
+    ]
+  },
+  "server": {
+    "behaviors": [
+      { "code": "passivephysics" },
+      { "code": "despawn", "minSeconds": 300 },
+      { "code": "floatupwhenstuck" }
+    ]
+  },
+  "sounds": {},
+  "attributes": {
+    "physics": {
+      "groundDragFactor": 1,
+      "airDragFallingFactor": 0.25
+    }
+  }
+}

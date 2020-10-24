@@ -102,12 +102,12 @@ namespace CaptureAnimals
             double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * acc * 0.75;
             double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * acc * 0.75;
 
-            Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.EyeHeight - 0.2, 0);
+            Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0);
             Vec3d aheadPos = pos.AheadCopy(1, byEntity.ServerPos.Pitch + rndpitch, byEntity.ServerPos.Yaw + rndyaw);
             Vec3d velocity = (aheadPos - pos) * 0.5;
 
             entity.ServerPos.SetPos(
-                byEntity.ServerPos.BehindCopy(0.21).XYZ.Add(0, byEntity.EyeHeight - 0.2, 0)
+                byEntity.ServerPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0)
             );
             entity.ServerPos.Motion.Set(velocity);
             entity.Pos.SetFrom(entity.ServerPos);
@@ -139,7 +139,7 @@ namespace CaptureAnimals
                 float chance = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-chance") ?? "0");
                 float minHealth = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-minhealth") ?? "0");
                 List<string> animals = Util.StrToListStr(inSlot.Itemstack.Attributes.GetString("bait-animals"));
-                for(int i=0; i<animals.Count; i++)
+                for (int i = 0; i < animals.Count; i++)
                 {
                     animals[i] = Util.GetLang(type, animals[i], Util.GetLangType.Entity);
                 }
