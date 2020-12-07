@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-/.ignore
-=======
 /ignore
->>>>>>> a15e6d7 (Initial commit)
 /bin
 /obj
+/mods
+/releases
