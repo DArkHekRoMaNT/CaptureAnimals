@@ -136,7 +136,7 @@ namespace CaptureAnimals
                         {
                             if (random.Next(0, 100) / 100F <= breakChance)
                             {
-                                Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-broken"), Api, FiredBy);
+                                Util.SendMessage(Lang.Get(Constants.MOD_ID + ":cage-broken"), Api, FiredBy);
                                 Die();
                                 return;
                             }
@@ -152,13 +152,13 @@ namespace CaptureAnimals
                             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
 
-                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-captured"), Api, FiredBy);
+                            Util.SendMessage(Lang.Get(Constants.MOD_ID + ":cage-captured"), Api, FiredBy);
                             entity.Die(EnumDespawnReason.Removed);
                             Die();
                         }
                         else
                         {
-                            Util.SendMessage(Lang.Get(CaptureAnimals.MOD_ID + ":cage-mistake"), Api, FiredBy);
+                            Util.SendMessage(Lang.Get(Constants.MOD_ID + ":cage-mistake"), Api, FiredBy);
                             Api.World.SpawnItemEntity(ProjectileStack, ServerPos.XYZ);
                             Die();
                         }

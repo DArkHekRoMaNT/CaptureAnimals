@@ -92,7 +92,7 @@ namespace CaptureAnimals
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"), byEntity, byPlayer, false, 8);
 
             string variant = stack.Item.Code.Path;
-            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(CaptureAnimals.MOD_ID + ":thrown" + variant));
+            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(Constants.MOD_ID, "thrown" + variant));
             Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
             ((EntityThrownCage)entity).FiredBy = byEntity;
             ((EntityThrownCage)entity).ProjectileStack = stack;
@@ -125,7 +125,7 @@ namespace CaptureAnimals
             if (inSlot.Itemstack.Item.LastCodePart() == "full")
             {
                 string animal = inSlot.Itemstack.Attributes.GetString("capturename");
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-full") + animal);
+                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-full") + animal);
             }
             else if (inSlot.Itemstack.Item.LastCodePart() == "empty" &&
                 inSlot.Itemstack.Attributes.HasAttribute("bait-code") &&
@@ -144,18 +144,18 @@ namespace CaptureAnimals
                     animals[i] = Util.GetLang(type, animals[i], Util.GetLangType.Entity);
                 }
 
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-name") + bait);
-                dsc.Append(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-animals") + Util.ListStrToStr(animals));
+                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-name") + bait);
+                dsc.Append(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
+                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
+                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-animals") + Util.ListStrToStr(animals));
             }
             else if (inSlot.Itemstack.Item.LastCodePart() == "empty")
             {
                 float chance = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["chance"].AsFloat();
                 float minHealth = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["minhealth"].AsFloat();
 
-                dsc.Append(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
-                dsc.AppendLine(Lang.Get(CaptureAnimals.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
+                dsc.Append(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
+                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
             }
         }
 
@@ -166,7 +166,7 @@ namespace CaptureAnimals
                 return new WorldInteraction[] {
                     new WorldInteraction()
                     {
-                        ActionLangCode = CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-empty",
+                        ActionLangCode = Constants.MOD_ID + ":heldhelp-cage-throw-empty",
                         MouseButton = EnumMouseButton.Right
                     }
                 };
@@ -176,7 +176,7 @@ namespace CaptureAnimals
                 return new WorldInteraction[] {
                     new WorldInteraction()
                     {
-                        ActionLangCode = CaptureAnimals.MOD_ID + ":heldhelp-cage-throw-full",
+                        ActionLangCode = Constants.MOD_ID + ":heldhelp-cage-throw-full",
                         MouseButton = EnumMouseButton.Right
                     }
                 };

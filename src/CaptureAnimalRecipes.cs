@@ -52,17 +52,17 @@ namespace CaptureAnimals
             {
                 if (type.Class == "EntityAgent" && type.Attributes != null)
                 {
-                    if (type.Attributes[CaptureAnimals.MOD_ID]["type"].Exists &&
-                        type.Attributes[CaptureAnimals.MOD_ID]["code"].Exists &&
-                        type.Attributes[CaptureAnimals.MOD_ID]["chance"].Exists &&
-                        type.Attributes[CaptureAnimals.MOD_ID]["minhealth"].Exists)
+                    if (type.Attributes[Constants.MOD_ID]["type"].Exists &&
+                        type.Attributes[Constants.MOD_ID]["code"].Exists &&
+                        type.Attributes[Constants.MOD_ID]["chance"].Exists &&
+                        type.Attributes[Constants.MOD_ID]["minhealth"].Exists)
                     {
                         Bait bait = new Bait
                         {
-                            type = type.Attributes[CaptureAnimals.MOD_ID]["type"].AsString(),
-                            code = type.Attributes[CaptureAnimals.MOD_ID]["code"].AsString(),
-                            chance = type.Attributes[CaptureAnimals.MOD_ID]["chance"].AsFloat(),
-                            minHealth = type.Attributes[CaptureAnimals.MOD_ID]["minhealth"].AsFloat(),
+                            type = type.Attributes[Constants.MOD_ID]["type"].AsString(),
+                            code = type.Attributes[Constants.MOD_ID]["code"].AsString(),
+                            chance = type.Attributes[Constants.MOD_ID]["chance"].AsFloat(),
+                            minHealth = type.Attributes[Constants.MOD_ID]["minhealth"].AsFloat(),
                         };
 
                         string animal = type.Code.Domain + AssetLocation.LocationSeparator + type.Code.Path;
@@ -72,9 +72,10 @@ namespace CaptureAnimals
                 }
             }
 
-            string cageVariant = Util.FirstCodeMapping("item", CaptureAnimals.MOD_ID + ":cage-*-empty", api.World);
+            string cageVariant = Util.FirstCodeMapping("item", Constants.MOD_ID + ":cage-*-empty", api.World);
             AssetLocation cageLoc = new AssetLocation(cageVariant);
-            foreach (var val in baitForAnimals) {
+            foreach (var val in baitForAnimals)
+            {
                 List<string> codes = new List<string>();
                 codes = Util.CodeMapping(val.Key.type, val.Key.code, api.World);
 
@@ -83,7 +84,7 @@ namespace CaptureAnimals
                     try
                     {
                         string postfix = val.Key.type + "-" + code.Replace(AssetLocation.LocationSeparator, '-');
-                        AssetLocation recipeName = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-with-" + postfix);
+                        AssetLocation recipeName = new AssetLocation(Constants.MOD_ID, "cage-with-" + postfix);
 
                         ItemStack output = new ItemStack(api.World.GetItem(cageLoc));
                         output.Attributes.SetString("bait-chance", val.Key.chance.ToString());
@@ -102,14 +103,14 @@ namespace CaptureAnimals
                             Output = new CraftingRecipeIngredient
                             {
                                 Type = EnumItemClass.Item,
-                                Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-empty"),
+                                Code = new AssetLocation(Constants.MOD_ID, "cage-{type}-empty"),
                                 Attributes = new JsonObject(JToken.Parse(output.Attributes.ToJsonToken()))
                             }
                         };
                         recipe.Ingredients.Add("C", new CraftingRecipeIngredient
                         {
                             Type = EnumItemClass.Item,
-                            Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
+                            Code = new AssetLocation(Constants.MOD_ID, "cage-*-empty"),
                             Name = "type"
                         });
                         recipe.Ingredients.Add("B", new CraftingRecipeIngredient
@@ -120,7 +121,7 @@ namespace CaptureAnimals
 
                         gridRecipes.Add(recipeName, recipe);
                     }
-                    catch(ArgumentException)
+                    catch (ArgumentException)
                     {
                         api.World.Logger.Error("Bait with other chances. Ignored");
                     }
@@ -222,14 +223,14 @@ namespace CaptureAnimals
                 Output = new CraftingRecipeIngredient
                 {
                     Type = EnumItemClass.Item,
-                    Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-full")
+                    Code = new AssetLocation(Constants.MOD_ID, "cage-{type}-full")
                 },
-                Name = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-{type}-bait")
+                Name = new AssetLocation(Constants.MOD_ID, "cage-{type}-bait")
             };
             recipe.Ingredients.Add("C", new CraftingRecipeIngredient
             {
                 Type = EnumItemClass.Item,
-                Code = new AssetLocation(CaptureAnimals.MOD_ID + ":cage-*-empty"),
+                Code = new AssetLocation(Constants.MOD_ID, "cage-*-empty"),
                 Name = "type"
             });
             recipe.Ingredients.Add("B", new CraftingRecipeIngredient

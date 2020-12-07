@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -81,14 +80,14 @@ namespace CaptureAnimals
         public static void SendMessageAll(string msg, ICoreAPI api, int chatGroup = -1)
         {
             IPlayer[] players = api.World.AllPlayers;
-            foreach(IPlayer player in players)
+            foreach (IPlayer player in players)
             {
                 SendMessage(msg, api, player, chatGroup);
             }
         }
 
         public const string separator = ", ";
-        public static string ListStrToStr(List<string> list) 
+        public static string ListStrToStr(List<string> list)
         {
             return String.Join(separator, list.ToArray());
         }
@@ -185,9 +184,9 @@ namespace CaptureAnimals
             string domain = codeAndPath.Substring(0, center);
             string path = codeAndPath.Substring(center + 1, codeAndPath.Length - center - 1);
 
-            switch(getLangType)
+            switch (getLangType)
             {
-                case GetLangType.ItemOrBlock: 
+                case GetLangType.ItemOrBlock:
                     return Lang.GetMatching(domain + AssetLocation.LocationSeparator + type + "-" + path);
                 case GetLangType.Entity:
                     return Lang.GetMatching(domain + AssetLocation.LocationSeparator + "item-creature-" + path);
