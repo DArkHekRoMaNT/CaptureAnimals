@@ -19,7 +19,8 @@
   "item-cage-titanium-case": "Cage Titanium (Case)",
   "item-cage-uranium-case": "Cage Uranium (Case)",
   "item-cage-zinc-case": "Cage Zinc (Case)",
-  "item-cage-meteoriciron-case": "Cage Meteoric Iron (Case)",
+  "item-cage-meteoriciron-case": "Cage Meteoric iron (Case)",
+
   "item-cage-bismuth-empty": "Cage Bismuth (Empty)",
   "item-cage-bismuthbronze-empty": "Cage Bismuth bronze (Empty)",
   "item-cage-blackbronze-empty": "Cage Black bronze (Empty)",
@@ -40,7 +41,8 @@
   "item-cage-titanium-empty": "Cage Titanium (Empty)",
   "item-cage-uranium-empty": "Cage Uranium (Empty)",
   "item-cage-zinc-empty": "Cage Zinc (Empty)",
-  "item-cage-meteoriciron-empty": "Cage Meteoriciron (Empty)",
+  "item-cage-meteoriciron-empty": "Cage Meteoric iron (Empty)",
+
   "item-cage-bismuth-full": "Cage Bismuth (Full)",
   "item-cage-bismuthbronze-full": "Cage Bismuth bronze (Full)",
   "item-cage-blackbronze-full": "Cage Black bronze (Full)",
@@ -61,7 +63,7 @@
   "item-cage-titanium-full": "Cage Titanium (Full)",
   "item-cage-uranium-full": "Cage Uranium (Full)",
   "item-cage-zinc-full": "Cage Zinc (Full)",
-  "item-cage-meteoriciron-full": "Cage Meteoriciron (Full)",
+  "item-cage-meteoriciron-full": "Cage Meteoric iron (Full)",
 
   "cage-mistake": "Failed to capture the animal (weakened animals are easier to capture)",
   "cage-broken": "Cage broken...",
@@ -72,5 +74,7 @@
   "heldhelp-cage-empty-bait-minhealth": "Min HP: ",
   "heldhelp-cage-empty-bait-animals": "For: ",
   "heldhelp-cage-throw-empty": "Throw to catch an animal",
-  "heldhelp-cage-throw-full": "Throw to release an animal"
+  "heldhelp-cage-throw-full": "Throw to release an animal",
+
+  "game:tabname-captureanimals": "Capture Animals"
 }

@@ -25,10 +25,14 @@
   "creativeinventory": {
     "general": ["*"],
     "items": ["*"],
-    "tools": ["*-empty"]
+    "tools": ["*-empty"],
+    "captureanimals": ["*"]
   },
   "maxstacksize": 1,
   "attributes": {
+    "handbook": {
+      "groupBy": ["cage-*"]
+    },
     "shelvable": true,
     "shelfTransform": {
       "scale": 0.1
