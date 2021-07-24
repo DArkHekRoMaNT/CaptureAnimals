@@ -1,0 +1,62 @@
+﻿[
+  {
+    "type": "item",
+    "code": "game:grain-*",
+    "entities": [
+      {
+        "code": "game:chicken-*",
+        "capturechance": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "code": "game:vegetable-carrot",
+    "entities": [
+      {
+        "code": "game:hare-*",
+        "capturechance": 1
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "code": "game:vegetable-turnip",
+    "entities": [
+      {
+        "code": "game:pig-*",
+        "capturechance": 0.5
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "code": "game:vegetable-cabbage",
+    "entities": [
+      {
+        "code": "game:sheep-*",
+        "capturechance": 0.5
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "code": "game:poultry-raw",
+    "entities": [
+      {
+        "code": "game:fox-*",
+        "capturechance": 0.25
+      }
+    ]
+  },
+  {
+    "type": "item",
+    "code": "game:redmeat-raw",
+    "entities": [
+      {
+        "code": "game:wolf-*",
+        "capturechance": 0.25
+      }
+    ]
+  }
+]

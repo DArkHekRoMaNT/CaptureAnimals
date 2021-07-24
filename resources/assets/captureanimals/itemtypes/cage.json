@@ -2,22 +2,32 @@
   "code": "cage",
   "class": "ItemCage",
   "variantgroups": [
-    { "code": "metal", "loadFromProperties": "game:block/metal" },
-    { "code": "type", "states": ["case", "empty", "full"] }
+    { "code": "type", "states": ["case", "empty", "full"] },
+    {
+      "code": "metal",
+      "states": ["copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative"]
+    }
   ],
   "shapeByType": {
-    "*-case": { "base": "item/cage-case" },
+    "*-case-*": { "base": "item/cage-case" },
     "*": { "base": "item/cage" }
   },
   "texturesByType": {
-    "*-case": {
-      "case": { "base": "game:block/metal/plate/{metal}" }
+    "*-case-creative": { "case": { "base": "game:item/resource/temporalgear" } },
+    "*-empty-creative": {
+      "core": { "base": "game:item/tool/material/blackbronze" },
+      "case": { "base": "game:item/resource/temporalgear" }
     },
-    "*-empty": {
+    "*-full-creative": {
+      "core": { "base": "game:item/tool/material/gold" },
+      "case": { "base": "game:item/resource/temporalgear" }
+    },
+    "*-case-*": { "case": { "base": "game:block/metal/plate/{metal}" } },
+    "*-empty-*": {
       "core": { "base": "game:item/tool/material/blackbronze" },
       "case": { "base": "game:block/metal/plate/{metal}" }
     },
-    "*-full": {
+    "*-full-*": {
       "core": { "base": "game:item/tool/material/gold" },
       "case": { "base": "game:block/metal/plate/{metal}" }
     }
@@ -25,35 +35,63 @@
   "creativeinventory": {
     "general": ["*"],
     "items": ["*"],
-    "tools": ["*-empty"],
+    "tools": ["*-empty-*"],
     "captureanimals": ["*"]
   },
   "maxstacksize": 1,
   "attributes": {
     "handbook": {
-      "groupBy": ["cage-*"]
+      "groupBy": ["*"],
+      "excludeByType": {
+        "*-creative": true,
+        "*": false
+      }
     },
     "shelvable": true,
-    "shelfTransform": {
-      "scale": 0.1
+    "onDisplayTransform": {
+      "translation": { "x": 0, "y": -0.35, "z": 0 },
+      "scale": 0.3
     },
-    "capturename": "undefined",
-    "breakchance": 0.25,
-    "defaultchance": { "chance": 0.1, "minhealth": 0.1 }
+    "capturename": "captureanimals:nothing",
+    "breakchanceByType": {
+      "*-copper": 0.5,
+      "*-tinbronze": 0.3,
+      "*-bismuthbronze": 0.3,
+      "*-blackbronze": 0.25,
+      "*-iron": 0.1,
+      "*-meteoriciron": 0.1,
+      "*-steel": 0.05,
+      "*-creative": 0
+    },
+    "efficiency": 0.5,
+    "defaultcapturechanceByType": {
+      "*-copper": 0.1,
+      "*-tinbronze": 0.15,
+      "*-bismuthbronze": 0.15,
+      "*-blackbronze": 0.15,
+      "*-iron": 0.2,
+      "*-meteoriciron": 0.2,
+      "*-steel": 0.25,
+      "*-creative": 1
+    }
   },
   "tpHandTransform": {
     "translation": { "x": -1.9, "y": -2.5, "z": -2.1 },
     "rotation": { "x": 0, "y": -62, "z": 18 },
-    "scale": 0.25
+    "scale": 0.5
+  },
+  "fpHandTransform": {
+    "scale": 1.5
   },
   "groundTransform": {
-    "translation": { "x": 0, "y": 0, "z": 0 },
-    "origin": { "x": 0.5, "y": 0.5, "z": 1 }
+    "translation": { "x": 0, "y": 0.5, "z": 0 },
+    "origin": { "x": 0.5, "y": 0.5, "z": 0.5 },
+    "scale": 2
   },
   "guiTransform": {
     "translation": { "x": 3, "y": 1, "z": 0 },
     "rotation": { "x": 0, "y": 45, "z": 45 },
     "origin": { "x": 0.5, "y": 0.5, "z": 0.5 },
-    "scale": 1
+    "scale": 1.5
   }
 }

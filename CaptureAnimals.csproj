@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
-    <VSVersion>1.14.2</VSVersion>
+    <TargetFramework>net461</TargetFramework>
+    <VSVersion>1.15.0</VSVersion>
   </PropertyGroup>
   
   <ItemGroup>
@@ -14,9 +14,22 @@
     <Reference Include="VSEssentials">
       <HintPath>$(VINTAGE_STORY)/$(VSVersion)/Mods/VSEssentials.dll</HintPath>
     </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(VINTAGE_STORY)/$(VSVersion)/Lib/0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>$(VINTAGE_STORY)/$(VSVersion)/Lib/protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(VINTAGE_STORY)/$(VSVersion)/Lib/Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="cairo-sharp">
+      <HintPath>$(VINTAGE_STORY)/$(VSVersion)/Lib/cairo-sharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
   <Target Name="Copy" AfterTargets="PostBuildEvent">

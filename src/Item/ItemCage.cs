@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using SharedUtils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -10,19 +11,31 @@ namespace CaptureAnimals
 {
     public class ItemCage : Item
     {
-        public override string GetHeldTpUseAnimation(ItemSlot activeHotbarSlot, Entity forEntity)
-        {
-            return null;
-        }
+        public bool IsEmpty => LastCodePart(1) == "empty";
+        public bool IsFull => LastCodePart(1) == "full";
+        public bool IsCase => LastCodePart(1) == "case";
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
-            if (slot.Itemstack.Item.LastCodePart() == "case")
+            if (((ItemCage)slot.Itemstack.Item).IsCase)
             {
                 base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handling);
                 return;
             }
 
+            if (byEntity.Controls.Sneak && ((ItemCage)slot.Itemstack.Item).IsEmpty)
+            {
+                IPlayer player = (byEntity as EntityPlayer).Player;
+                InventoryCage inventory = new InventoryCage(player, slot);
+
+                player.InventoryManager.OpenInventory(inventory);
+
+                byEntity.Attributes.SetInt("opengui", 1);
+                handling = EnumHandHandling.Handled;
+                return;
+            }
+
+            byEntity.Attributes.SetInt("opengui", 0);
             byEntity.Attributes.SetInt("aiming", 1);
             byEntity.Attributes.SetInt("aimingCancel", 0);
             byEntity.StartAnimation("aim");
@@ -32,7 +45,9 @@ namespace CaptureAnimals
 
         public override bool OnHeldInteractStep(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            if (byEntity.Attributes.GetInt("aimingCancel") == 1) return false;
+            if (byEntity.Attributes.GetInt("aimingCancel") == 1 ||
+                byEntity.Attributes.GetInt("opengui") == 1)
+                return false;
 
             if (byEntity.World is IClientWorldAccessor)
             {
@@ -66,7 +81,8 @@ namespace CaptureAnimals
 
         public override void OnHeldInteractStop(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel)
         {
-            if (byEntity.Attributes.GetInt("aimingCancel") == 1) return;
+            if (byEntity.Attributes.GetInt("aimingCancel") == 1 ||
+                byEntity.Attributes.GetInt("opengui") == 1) return;
 
             byEntity.Attributes.SetInt("aiming", 0);
             byEntity.StopAnimation("aim");
@@ -88,17 +104,17 @@ namespace CaptureAnimals
             slot.MarkDirty();
 
             IPlayer byPlayer = null;
-            if (byEntity is EntityPlayer) byPlayer = byEntity.World.PlayerByUid(((EntityPlayer)byEntity).PlayerUID);
+            if (byEntity is EntityPlayer player) byPlayer = byEntity.World.PlayerByUid(player.PlayerUID);
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"), byEntity, byPlayer, false, 8);
 
             string variant = stack.Item.Code.Path;
-            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(Constants.MOD_ID, "thrown" + variant));
+            EntityProperties type = byEntity.World.GetEntityType(new AssetLocation(ConstantsCore.ModId, "thrown" + variant));
             Entity entity = byEntity.World.ClassRegistry.CreateEntity(type);
             ((EntityThrownCage)entity).FiredBy = byEntity;
             ((EntityThrownCage)entity).ProjectileStack = stack;
             ((EntityThrownCage)entity).Damage = damage;
 
-            float acc = (1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0));
+            float acc = 1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0);
             double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * acc * 0.75;
             double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * acc * 0.75;
 
@@ -112,76 +128,110 @@ namespace CaptureAnimals
             entity.ServerPos.Motion.Set(velocity);
             entity.Pos.SetFrom(entity.ServerPos);
             entity.World = byEntity.World;
-            ((EntityThrownCage)entity).SetRotation();
 
             byEntity.World.SpawnEntity(entity);
             byEntity.StartAnimation("throw");
+        }
+
+        public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
+        {
+            if (((ItemCage)inSlot.Itemstack.Item).IsEmpty)
+            {
+                return new WorldInteraction[]
+                {
+                    new WorldInteraction()
+                    {
+                        ActionLangCode = ConstantsCore.ModId + ":heldhelp-cage-throw-empty",
+                        MouseButton = EnumMouseButton.Right
+                    },
+                    new WorldInteraction()
+                    {
+                        ActionLangCode = ConstantsCore.ModId + ":heldhelp-cage-open",
+                        MouseButton = EnumMouseButton.Right,
+                        HotKeyCode = "sneak"
+                    }
+                };
+            }
+            else if (((ItemCage)inSlot.Itemstack.Item).IsFull)
+            {
+                return new WorldInteraction[]
+                {
+                    new WorldInteraction()
+                    {
+                        ActionLangCode = ConstantsCore.ModId + ":heldhelp-cage-throw-full",
+                        MouseButton = EnumMouseButton.Right
+                    }
+                };
+            }
+            else return base.GetHeldInteractionHelp(inSlot);
         }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
         {
             base.GetHeldItemInfo(inSlot, dsc, world, withDebugInfo);
 
-            if (inSlot.Itemstack.Item.LastCodePart() == "full")
+            if (IsEmpty)
             {
-                string animal = inSlot.Itemstack.Attributes.GetString("capturename");
-                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-full") + animal);
-            }
-            else if (inSlot.Itemstack.Item.LastCodePart() == "empty" &&
-                inSlot.Itemstack.Attributes.HasAttribute("bait-code") &&
-                inSlot.Itemstack.Attributes.HasAttribute("bait-type") &&
-                inSlot.Itemstack.Attributes.HasAttribute("bait-chance") &&
-                inSlot.Itemstack.Attributes.HasAttribute("bait-minhealth") &&
-                inSlot.Itemstack.Attributes.HasAttribute("bait-animals"))
-            {
-                string type = inSlot.Itemstack.Attributes.GetString("bait-type");
-                string bait = Util.GetLang(type, inSlot.Itemstack.Attributes.GetString("bait-code"));
-                float chance = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-chance") ?? "0");
-                float minHealth = float.Parse(inSlot.Itemstack.Attributes.GetString("bait-minhealth") ?? "0");
-                List<string> animals = Util.StrToListStr(inSlot.Itemstack.Attributes.GetString("bait-animals"));
-                for (int i = 0; i < animals.Count; i++)
+                dsc.AppendLine(Lang.Get(
+                    ConstantsCore.ModId + ":heldinfo-cage-empty-breakchance",
+                    (int)(Attributes["breakchance"].AsFloat() * 100f)
+                ));
+                dsc.AppendLine(Lang.Get(
+                    ConstantsCore.ModId + ":heldinfo-cage-empty-efficiency",
+                    (int)(Attributes["efficiency"].AsFloat() * 100f)
+                ));
+
+                ItemStack bait = inSlot.Itemstack.Attributes.GetItemstack("bait");
+                if (bait != null)
                 {
-                    animals[i] = Util.GetLang(type, animals[i], Util.GetLangType.Entity);
+                    bait.ResolveBlockOrItem(api.World);
+                    dsc.AppendLine(Lang.Get(
+                        ConstantsCore.ModId + ":heldinfo-cage-empty-bait",
+                        bait.GetName()
+                    ));
                 }
-
-                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-name") + bait);
-                dsc.Append(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
-                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
-                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-animals") + Util.ListStrToStr(animals));
             }
-            else if (inSlot.Itemstack.Item.LastCodePart() == "empty")
+            else if (IsFull)
             {
-                float chance = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["chance"].AsFloat();
-                float minHealth = inSlot.Itemstack.Collectible.Attributes["defaultchance"]["minhealth"].AsFloat();
-
-                dsc.Append(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-chance") + chance * 100 + "%, ");
-                dsc.AppendLine(Lang.Get(Constants.MOD_ID + ":heldhelp-cage-empty-bait-minhealth") + minHealth * 100 + "%");
+                dsc.AppendLine(Lang.Get(
+                    ConstantsCore.ModId + ":heldinfo-cage-full-entityname",
+                    inSlot.Itemstack.Attributes.GetString(
+                        "capturename",
+                        Lang.Get(ConstantsCore.ModId + ":nothing")
+                    )
+                ));
             }
         }
 
-        public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
+        public override void InGuiIdle(IWorldAccessor world, ItemStack stack)
         {
-            if (inSlot.Itemstack.Item.LastCodePart() == "empty")
-            {
-                return new WorldInteraction[] {
-                    new WorldInteraction()
-                    {
-                        ActionLangCode = Constants.MOD_ID + ":heldhelp-cage-throw-empty",
-                        MouseButton = EnumMouseButton.Right
-                    }
-                };
-            }
-            else if (inSlot.Itemstack.Item.LastCodePart() == "full")
-            {
-                return new WorldInteraction[] {
-                    new WorldInteraction()
-                    {
-                        ActionLangCode = Constants.MOD_ID + ":heldhelp-cage-throw-full",
-                        MouseButton = EnumMouseButton.Right
-                    }
-                };
-            }
-            else return base.GetHeldInteractionHelp(inSlot);
+            base.InGuiIdle(world, stack);
+
+            GuiTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
+            GuiTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
+            GuiTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+        }
+        public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
+        {
+            base.OnHeldIdle(slot, byEntity);
+            IWorldAccessor world = byEntity.World;
+
+            FpHandTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
+            FpHandTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
+            FpHandTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+
+            TpHandTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
+            TpHandTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
+            TpHandTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+        }
+        public override void OnGroundIdle(EntityItem entityItem)
+        {
+            base.OnGroundIdle(entityItem);
+            IWorldAccessor world = entityItem.World;
+
+            GroundTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
+            GroundTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
+            GroundTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
         }
     }
 }

@@ -2,10 +2,24 @@
   "ingredientPattern": "CP",
   "ingredients": {
     "P": { "type": "item", "code": "game:resin" },
-    "C": { "type": "item", "code": "cage-*-case", "name": "type" }
+    "C": {
+      "type": "item",
+      "code": "cage-*-case",
+      "name": "type",
+      "allowedVariants": [
+        "copper",
+        "tinbronze",
+        "bismuthbronze",
+        "blackbronze",
+        "iron",
+        "meteoriciron",
+        "steel",
+        "creative"
+      ]
+    }
   },
   "width": 2,
   "height": 1,
   "shapeless": true,
-  "output": { "type": "item", "code": "cage-{type}-empty" }
+  "output": { "type": "item", "code": "cage-empty-{type}" }
 }

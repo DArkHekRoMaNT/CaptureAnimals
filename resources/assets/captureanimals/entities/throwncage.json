@@ -1,30 +1,39 @@
 {
   "code": "throwncage",
   "class": "EntityThrownCage",
-  "hitboxSize": { "x": 0.25, "y": 0.25 },
+  "hitboxSize": { "x": 0.5, "y": 0.5 },
   "variantgroups": [
-    { "code": "metal", "loadFromProperties": "game:block/metal" },
-    { "code": "type", "states": ["empty", "full"] }
+    { "code": "type", "states": ["case", "empty", "full"] },
+    {
+      "code": "metal",
+      "states": ["copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative"]
+    }
   ],
   "client": {
     "renderer": "Shape",
     "shape": { "base": "item/cage" },
     "texturesByType": {
-      "*-empty": {
+      "*-case-creative": { "case": { "base": "game:item/resource/temporalgear" } },
+      "*-empty-creative": {
+        "core": { "base": "game:item/tool/material/blackbronze" },
+        "case": { "base": "game:item/resource/temporalgear" }
+      },
+      "*-full-creative": {
+        "core": { "base": "game:item/tool/material/gold" },
+        "case": { "base": "game:item/resource/temporalgear" }
+      },
+      "*-case-*": { "case": { "base": "game:block/metal/plate/{metal}" } },
+      "*-empty-*": {
         "core": { "base": "game:item/tool/material/blackbronze" },
         "case": { "base": "game:block/metal/plate/{metal}" }
       },
-      "*-full": {
+      "*-full-*": {
         "core": { "base": "game:item/tool/material/gold" },
         "case": { "base": "game:block/metal/plate/{metal}" }
       }
     },
-    "size": 0.25,
-    "behaviors": [
-      { "code": "passivephysics" },
-      { "code": "interpolateposition" },
-      { "code": "floatupwhenstuck" }
-    ]
+    "size": 0.5,
+    "behaviors": [{ "code": "passivephysics" }, { "code": "interpolateposition" }, { "code": "floatupwhenstuck" }]
   },
   "server": {
     "behaviors": [
