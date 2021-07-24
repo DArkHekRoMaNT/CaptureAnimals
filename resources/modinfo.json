@@ -4,7 +4,7 @@
   "name": "Capture Animals",
   "author": "DArkHekRoMaNT",
   "description": "Capture them all!",
-  "version": "2.0.0-a",
+  "version": "2.0.0",
   "dependency": {
     "game": "1.15.0"
   },
