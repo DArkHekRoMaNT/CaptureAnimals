@@ -4,7 +4,7 @@
     "P": { "type": "item", "code": "game:resin" },
     "C": {
       "type": "item",
-      "code": "cage-*-case",
+      "code": "cage-case-*",
       "name": "type",
       "allowedVariants": [
         "copper",
