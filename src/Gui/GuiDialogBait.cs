@@ -49,7 +49,7 @@ namespace CaptureAnimals
                     .AddItemSlotGrid(inventory, SendInvPacket, 1, slotBounds, "slot")
                     .BeginClip(clippingBounds)
                         .AddInset(insetBounds, 3)
-                        .AddDynamicText("", CairoFont.WhiteSmallText(), EnumTextOrientation.Left, textBounds, "text")
+                        .AddDynamicText("", CairoFont.WhiteSmallText().WithOrientation(EnumTextOrientation.Left), textBounds, "text")
                     .EndClip()
                     .AddVerticalScrollbar(OnNewScrollbarvalue, scrollbarBounds, "scrollbar")
                 .EndChildElements()
