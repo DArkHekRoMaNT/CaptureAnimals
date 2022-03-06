@@ -4,9 +4,9 @@
   "name": "Capture Animals",
   "authors": ["DArkHekRoMaNT"],
   "description": "Capture them all!",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "dependencies": {
-    "game": "1.16.0-pre.8"
+    "game": "1.16.0"
   },
   "website": "https://github.com/DArkHekRoMaNT/CaptureAnimals"
 }
