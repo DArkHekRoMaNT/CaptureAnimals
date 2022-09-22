@@ -1,0 +1,46 @@
+{
+	"editor": {
+		"allAngles": false,
+		"entityTextureMode": true
+	},
+	"textureWidth": 16,
+	"textureHeight": 16,
+	"textureSizes": {
+	},
+	"textures": {
+	},
+	"elements": [
+		{
+			"name": "core",
+			"from": [ 4.0, 0.0, 4.0 ], 
+			"to": [ 4.0, 0.0, 4.0 ], 
+			"uv": [ 12.0, 0.0 ],
+			"rotationOrigin": [ 8.0, 8.0, 8.0 ],
+			"faces": {
+				"north": { "texture": "#case", "uv": [ 12.0, 0.5, 12.5, 1.0 ] },
+				"east": { "texture": "#case", "uv": [ 12.5, 0.5, 13.0, 1.0 ] },
+				"south": { "texture": "#case", "uv": [ 13.0, 0.5, 13.5, 1.0 ] },
+				"west": { "texture": "#case", "uv": [ 13.5, 0.5, 14.0, 1.0 ] },
+				"up": { "texture": "#case", "uv": [ 12.0, 0.0, 12.5, 0.5 ] },
+				"down": { "texture": "#case", "uv": [ 12.5, 0.0, 13.0, 0.5 ] }
+			},
+			"children": [
+				{
+					"name": "soul",
+					"from": [ 3.0, 7.0, 3.0 ], 
+					"to": [ 5.0, 9.0, 5.0 ], 
+					"autoUnwrap": false,
+					"uv": [ 4.5, 8.5 ],
+					"rotationOrigin": [ 4.0, 8.0, 4.0 ],
+					"faces": {
+						"north": { "texture": "#core", "uv": [ 12.0, 2.0, 14.0, 4.0 ], "glow": 100 },
+						"east": { "texture": "#core", "uv": [ 10.0, 4.0, 12.0, 6.0 ], "glow": 100 },
+						"south": { "texture": "#core", "uv": [ 14.0, 2.0, 16.0, 4.0 ], "glow": 100 },
+						"west": { "texture": "#core", "uv": [ 14.0, 0.0, 16.0, 2.0 ], "glow": 100 },
+						"up": { "texture": "#core", "uv": [ 12.0, 4.0, 14.0, 6.0 ], "rotation": 180, "glow": 100 },
+						"down": { "texture": "#core", "uv": [ 14.0, 4.0, 16.0, 6.0 ], "glow": 100 }
+					}
+				}
+			]
+		}
+	]}

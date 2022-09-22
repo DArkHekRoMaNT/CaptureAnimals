@@ -26,13 +26,27 @@
 			},
 			"children": [
 				{
+					"name": "soul",
+					"from": [ 3.0, 7.0, 3.0 ], 
+					"to": [ 5.0, 9.0, 5.0 ], 
+					"autoUnwrap": false,
+					"uv": [ 4.5, 8.5 ],
+					"rotationOrigin": [ 4.0, 8.0, 4.0 ],
+					"faces": {
+						"north": { "texture": "#core", "uv": [ 12.0, 2.0, 14.0, 4.0 ], "glow": 100 },
+						"east": { "texture": "#core", "uv": [ 10.0, 4.0, 12.0, 6.0 ], "glow": 100 },
+						"south": { "texture": "#core", "uv": [ 14.0, 2.0, 16.0, 4.0 ], "glow": 100 },
+						"west": { "texture": "#core", "uv": [ 14.0, 0.0, 16.0, 2.0 ], "glow": 100 },
+						"up": { "texture": "#core", "uv": [ 12.0, 4.0, 14.0, 6.0 ], "rotation": 180, "glow": 100 },
+						"down": { "texture": "#core", "uv": [ 14.0, 4.0, 16.0, 6.0 ], "glow": 100 }
+					}
+				},
+				{
 					"name": "circle1",
 					"from": [ 0.0, 7.5, 3.0 ], 
 					"to": [ 0.0, 7.5, 3.0 ], 
 					"uv": [ 12.0, 0.0 ],
 					"rotationOrigin": [ 4.0, 8.0, 4.0 ],
-					"rotationX": -45.0,
-					"rotationZ": 45.0,
 					"faces": {
 						"north": { "texture": "#case", "uv": [ 12.0, 0.5, 12.5, 1.0 ] },
 						"east": { "texture": "#case", "uv": [ 12.5, 0.5, 13.0, 1.0 ] },
@@ -44,8 +58,8 @@
 					"children": [
 						{
 							"name": "Cube1",
-							"from": [ 2.0, 0.001, -4.0 ], 
-							"to": [ 6.0, 1.001, -3.0 ], 
+							"from": [ 2.0, 0.001, -3.9 ], 
+							"to": [ 6.0, 1.001, -2.9 ], 
 							"uv": [ -0.25, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"faces": {
@@ -59,8 +73,8 @@
 						},
 						{
 							"name": "Cube5",
-							"from": [ 2.0, 0.0, -4.0 ], 
-							"to": [ 6.0, 1.0, -3.0 ], 
+							"from": [ 2.0, 0.0, -3.9 ], 
+							"to": [ 6.0, 1.0, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -45.0,
@@ -75,8 +89,8 @@
 						},
 						{
 							"name": "Cube6",
-							"from": [ 2.0, 0.001, -4.0 ], 
-							"to": [ 6.0, 1.001, -3.0 ], 
+							"from": [ 2.0, 0.001, -3.9 ], 
+							"to": [ 6.0, 1.001, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -90.0,
@@ -91,8 +105,8 @@
 						},
 						{
 							"name": "Cube7",
-							"from": [ 2.0, 0.0, -4.0 ], 
-							"to": [ 6.0, 1.0, -3.0 ], 
+							"from": [ 2.0, 0.0, -3.9 ], 
+							"to": [ 6.0, 1.0, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -135.0,
@@ -107,8 +121,8 @@
 						},
 						{
 							"name": "Cube8",
-							"from": [ 2.0, 0.001, -4.0 ], 
-							"to": [ 6.0, 1.001, -3.0 ], 
+							"from": [ 2.0, 0.001, -3.9 ], 
+							"to": [ 6.0, 1.001, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -180.0,
@@ -123,8 +137,8 @@
 						},
 						{
 							"name": "Cube9",
-							"from": [ 2.0, 0.0, -4.0 ], 
-							"to": [ 6.0, 1.0, -3.0 ], 
+							"from": [ 2.0, 0.0, -3.9 ], 
+							"to": [ 6.0, 1.0, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 135.0,
@@ -139,8 +153,8 @@
 						},
 						{
 							"name": "Cube10",
-							"from": [ 2.0, 0.001, -4.0 ], 
-							"to": [ 6.0, 1.001, -3.0 ], 
+							"from": [ 2.0, 0.001, -3.9 ], 
+							"to": [ 6.0, 1.001, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 90.0,
@@ -155,8 +169,8 @@
 						},
 						{
 							"name": "Cube11",
-							"from": [ 2.0, 0.0, -4.0 ], 
-							"to": [ 6.0, 1.0, -3.0 ], 
+							"from": [ 2.0, 0.0, -3.9 ], 
+							"to": [ 6.0, 1.0, -2.9 ], 
 							"uv": [ 0.0, 4.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 45.0,
@@ -173,11 +187,10 @@
 				},
 				{
 					"name": "circle2",
-					"from": [ 0.0, 7.5, 3.0 ], 
-					"to": [ 0.0, 7.5, 3.0 ], 
+					"from": [ 0.0, 7.51, 3.0 ], 
+					"to": [ 0.0, 7.51, 3.0 ], 
 					"uv": [ 12.0, 0.0 ],
 					"rotationOrigin": [ 4.0, 8.0, 4.0 ],
-					"rotationZ": -22.5,
 					"faces": {
 						"north": { "texture": "#case", "uv": [ 12.0, 0.5, 12.5, 1.0 ] },
 						"east": { "texture": "#case", "uv": [ 12.5, 0.5, 13.0, 1.0 ] },
@@ -318,12 +331,10 @@
 				},
 				{
 					"name": "circle3",
-					"from": [ 0.0, 7.5, 3.0 ], 
-					"to": [ 0.0, 7.5, 3.0 ], 
+					"from": [ 0.0, 7.52, 3.0 ], 
+					"to": [ 0.0, 7.52, 3.0 ], 
 					"uv": [ 12.0, 0.0 ],
 					"rotationOrigin": [ 4.0, 8.0, 4.0 ],
-					"rotationX": -112.5,
-					"rotationZ": -112.5,
 					"faces": {
 						"north": { "texture": "#case", "uv": [ 12.0, 0.5, 12.5, 1.0 ] },
 						"east": { "texture": "#case", "uv": [ 12.5, 0.5, 13.0, 1.0 ] },
@@ -335,8 +346,8 @@
 					"children": [
 						{
 							"name": "Cube13",
-							"from": [ 1.0, 0.001, -6.0 ], 
-							"to": [ 7.0, 1.001, -5.0 ], 
+							"from": [ 1.0, 0.001, -6.2 ], 
+							"to": [ 7.0, 1.001, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"faces": {
@@ -350,8 +361,8 @@
 						},
 						{
 							"name": "Cube14",
-							"from": [ 1.0, 0.0, -6.0 ], 
-							"to": [ 7.0, 1.0, -5.0 ], 
+							"from": [ 1.0, 0.0, -6.2 ], 
+							"to": [ 7.0, 1.0, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -45.0,
@@ -366,8 +377,8 @@
 						},
 						{
 							"name": "Cube15",
-							"from": [ 1.0, 0.001, -6.0 ], 
-							"to": [ 7.0, 1.001, -5.0 ], 
+							"from": [ 1.0, 0.001, -6.2 ], 
+							"to": [ 7.0, 1.001, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -90.0,
@@ -382,8 +393,8 @@
 						},
 						{
 							"name": "Cube16",
-							"from": [ 1.0, 0.0, -6.0 ], 
-							"to": [ 7.0, 1.0, -5.0 ], 
+							"from": [ 1.0, 0.0, -6.2 ], 
+							"to": [ 7.0, 1.0, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -135.0,
@@ -398,8 +409,8 @@
 						},
 						{
 							"name": "Cube17",
-							"from": [ 1.0, 0.001, -6.0 ], 
-							"to": [ 7.0, 1.001, -5.0 ], 
+							"from": [ 1.0, 0.001, -6.2 ], 
+							"to": [ 7.0, 1.001, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": -180.0,
@@ -414,8 +425,8 @@
 						},
 						{
 							"name": "Cube18",
-							"from": [ 1.0, 0.0, -6.0 ], 
-							"to": [ 7.0, 1.0, -5.0 ], 
+							"from": [ 1.0, 0.0, -6.2 ], 
+							"to": [ 7.0, 1.0, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 135.0,
@@ -430,8 +441,8 @@
 						},
 						{
 							"name": "Cube19",
-							"from": [ 1.0, 0.001, -6.0 ], 
-							"to": [ 7.0, 1.001, -5.0 ], 
+							"from": [ 1.0, 0.001, -6.2 ], 
+							"to": [ 7.0, 1.001, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 90.0,
@@ -446,8 +457,8 @@
 						},
 						{
 							"name": "Cube20",
-							"from": [ 1.0, 0.0, -6.0 ], 
-							"to": [ 7.0, 1.0, -5.0 ], 
+							"from": [ 1.0, 0.0, -6.2 ], 
+							"to": [ 7.0, 1.0, -5.2 ], 
 							"uv": [ 0.0, 0.0 ],
 							"rotationOrigin": [ 4.0, 0.0, 1.0 ],
 							"rotationY": 45.0,
@@ -467,124 +478,96 @@
 	],
 	"animations": [
 		{
-			"name": "rotating",
-			"code": "rotating",
-			"quantityframes": 30,
-			"onActivityStopped": "PlayTillEnd",
-			"onAnimationEnd": "Repeat",
-			"keyframes": [
-				{
-					"frame": 0,
-					"elements": {
-						"core": { "rotationX": 0.0, "rotationY": -180.0, "rotationZ": 0.0 },
-						"Soul": { "rotationX": -180.0, "rotationY": 0.0, "rotationZ": -180.0 }
-					}
-				},
-				{
-					"frame": 29,
-					"elements": {
-						"core": { "rotationX": 0.0, "rotationY": 180.0, "rotationZ": 0.0 },
-						"Soul": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
-					}
-				}
-			]
-		},
-
-		{
-			"name": "idle",
-			"code": "idle",
-			"quantityframes": 16,
-			"onActivityStopped": "Rewind",
-			"onAnimationEnd": "Repeat",
-			"keyframes": [
-				{
-					"frame": 0,
-					"elements": {
-						"core": { "offsetX": 0.0, "offsetY": 2.0, "offsetZ": 0.0 }
-					}
-				},
-				{
-					"frame": 8,
-					"elements": {
-						"core": { "offsetX": 0.0, "offsetY": -2.0, "offsetZ": 0.0 }
-					}
-				},
-				{
-					"frame": 15,
-					"elements": {
-						"core": { "offsetX": 0.0, "offsetY": 2.0, "offsetZ": 0.0 }
-					}
-				}
-			]
-		},
-
-		{
-			"name": "circle-small",
-			"code": "circle-small",
-			"quantityframes": 30,
-			"onActivityStopped": "PlayTillEnd",
+			"name": "soul",
+			"code": "soul",
+			"quantityframes": 20,
+			"onActivityStopped": "EaseOut",
 			"onAnimationEnd": "Repeat",
 			"keyframes": [
 				{
 					"frame": 0,
 					"elements": {
 						"core": {  },
-						"circle1": { "rotationX": -180.0, "rotationY": 0.0, "rotationZ": 180.0 }
+						"soul": { "rotationX": -180.0, "rotationY": -180.0, "rotationZ": -180.0 }
+					}
+				},
+				{
+					"frame": 19,
+					"elements": {
+						"core": {  },
+						"soul": { "rotationX": 180.0, "rotationY": 180.0, "rotationZ": 180.0 }
+					}
+				}
+			]
+		},
+
+		{
+			"name": "ring1",
+			"code": "ring1",
+			"quantityframes": 20,
+			"onActivityStopped": "EaseOut",
+			"onAnimationEnd": "Repeat",
+			"keyframes": [
+				{
+					"frame": 0,
+					"elements": {
+						"core": {  },
+						"circle1": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": -180.0 }
+					}
+				},
+				{
+					"frame": 19,
+					"elements": {
+						"core": {  },
+						"circle1": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 180.0 }
+					}
+				}
+			]
+		},
+
+		{
+			"name": "ring2",
+			"code": "ring2",
+			"quantityframes": 30,
+			"onActivityStopped": "EaseOut",
+			"onAnimationEnd": "Repeat",
+			"keyframes": [
+				{
+					"frame": 0,
+					"elements": {
+						"core": {  },
+						"circle2": { "rotationX": 90.0, "rotationY": 0.0, "rotationZ": -180.0 }
 					}
 				},
 				{
 					"frame": 29,
 					"elements": {
 						"core": {  },
-						"circle1": { "rotationX": 180.0, "rotationY": 0.0, "rotationZ": -180.0 }
+						"circle2": { "rotationX": 90.0, "rotationY": 0.0, "rotationZ": 180.0 }
 					}
 				}
 			]
 		},
 
 		{
-			"name": "circle-middle",
-			"code": "circle-middle",
-			"quantityframes": 40,
-			"onActivityStopped": "PlayTillEnd",
+			"name": "ring3",
+			"code": "ring3",
+			"quantityframes": 60,
+			"onActivityStopped": "EaseOut",
 			"onAnimationEnd": "Repeat",
 			"keyframes": [
 				{
 					"frame": 0,
 					"elements": {
 						"core": {  },
-						"circle2": { "rotationX": -180.0, "rotationY": 0.0, "rotationZ": 180.0 }
+						"circle3": { "rotationX": -180.0, "rotationY": 0.0, "rotationZ": 0.0 }
 					}
 				},
 				{
-					"frame": 39,
+					"frame": 59,
 					"elements": {
 						"core": {  },
-						"circle2": { "rotationX": 180.0, "rotationY": 0.0, "rotationZ": -180.0 }
-					}
-				}
-			]
-		},
-
-		{
-			"name": "circle-large",
-			"code": "circle-large",
-			"quantityframes": 50,
-			"onActivityStopped": "PlayTillEnd",
-			"onAnimationEnd": "Repeat",
-			"keyframes": [
-				{
-					"frame": 0,
-					"elements": {
-						"core": {  },
-						"circle3": { "rotationX": -180.0, "rotationY": 0.0, "rotationZ": 180.0 }
-					}
-				},
-				{
-					"frame": 49,
-					"elements": {
-						"core": {  },
-						"circle3": { "rotationX": 180.0, "rotationY": 0.0, "rotationZ": -180.0 }
+						"circle3": { "rotationX": 180.0, "rotationY": 0.0, "rotationZ": 0.0 }
 					}
 				}
 			]

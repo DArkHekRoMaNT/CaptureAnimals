@@ -1,17 +1,23 @@
 {
   "code": "throwncage",
   "class": "EntityThrownCage",
-  "hitboxSize": { "x": 0.5, "y": 0.5 },
+  "hitboxSize": {
+    "x": 0.5,
+    "y": 0.5
+  },
   "variantgroups": [
-    { "code": "type", "states": ["case", "empty", "full"] },
+    {
+      "code": "type",
+      "states": [ "case", "empty", "full" ]
+    },
     {
       "code": "metal",
-      "states": ["copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative"]
+      "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ]
     }
   ],
   "client": {
     "renderer": "Shape",
-    "shape": { "base": "item/cage" },
+    "shape": { "base": "item/cage/full" },
     "texturesByType": {
       "*-case-creative": { "case": { "base": "game:item/resource/temporalgear" } },
       "*-empty-creative": {
@@ -33,12 +39,57 @@
       }
     },
     "size": 0.5,
-    "behaviors": [{ "code": "passivephysics" }, { "code": "interpolateposition" }, { "code": "floatupwhenstuck" }]
+    "behaviors": [
+      { "code": "passivephysics" },
+      { "code": "interpolateposition" },
+      { "code": "floatupwhenstuck" }
+    ],
+    "animations": [
+      {
+        "code": "soul",
+        "animation": "soul",
+        "animationSpeed": 1,
+        "EaseInSpeed": 1000000000000000,
+        "EaseOutSpeed": 1000000000000000,
+        "BlendMode": "Add",
+        "ClientSide": true
+      },
+      {
+        "code": "ring1",
+        "animation": "ring1",
+        "animationSpeed": 1,
+        "EaseInSpeed": 1000000000000000,
+        "EaseOutSpeed": 1000000000000000,
+        "BlendMode": "Add",
+        "ClientSide": true
+      },
+      {
+        "code": "ring2",
+        "animation": "ring2",
+        "animationSpeed": 1,
+        "EaseInSpeed": 1000000000000000,
+        "EaseOutSpeed": 1000000000000000,
+        "BlendMode": "Add",
+        "ClientSide": true
+      },
+      {
+        "code": "ring3",
+        "animation": "ring3",
+        "animationSpeed": 1,
+        "EaseInSpeed": 1000000000000000,
+        "EaseOutSpeed": 1000000000000000,
+        "BlendMode": "Add",
+        "ClientSide": true
+      }
+    ]
   },
   "server": {
     "behaviors": [
       { "code": "passivephysics" },
-      { "code": "despawn", "minSeconds": 300 },
+      {
+        "code": "despawn",
+        "minSeconds": 300
+      },
       { "code": "floatupwhenstuck" }
     ]
   },

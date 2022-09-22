@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SharedUtils;
+using System;
 using System.Text;
-using SharedUtils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -14,6 +14,10 @@ namespace CaptureAnimals
         public bool IsEmpty => LastCodePart(1) == "empty";
         public bool IsFull => LastCodePart(1) == "full";
         public bool IsCase => LastCodePart(1) == "case";
+
+        private long lastRenderMs = 0;
+        private MeshData[] meshes;
+        private MeshRef model;
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
@@ -203,35 +207,89 @@ namespace CaptureAnimals
             }
         }
 
-        public override void InGuiIdle(IWorldAccessor world, ItemStack stack)
+        public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
         {
-            base.InGuiIdle(world, stack);
+            base.OnBeforeRender(capi, itemstack, target, ref renderinfo);
 
-            GuiTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
-            GuiTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
-            GuiTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+            if (!IsCase)
+            {
+                if (model == null)
+                {
+                    CreateModel(capi);
+                }
+
+                // Hook to fix renderinfo.dt is zero if not in hand
+                // Do real dt for all equivalent stacks
+                float dt = api.World.ElapsedMilliseconds - lastRenderMs;
+                lastRenderMs = api.World.ElapsedMilliseconds;
+
+                UpdateModel(capi, itemstack, dt / 1000);
+
+                renderinfo.ModelRef = model;
+            }
         }
-        public override void OnHeldIdle(ItemSlot slot, EntityAgent byEntity)
+
+        private void UpdateModel(ICoreClientAPI capi, ItemStack itemstack, float dt)
         {
-            base.OnHeldIdle(slot, byEntity);
-            IWorldAccessor world = byEntity.World;
+            var origin = new Vec3f(0.5f, 0.5f, 0.5f);
+            meshes[0].Rotate(origin, 4 * dt, 4 * dt, 4 * dt);
+            meshes[1].Rotate(origin, 0 * dt, 0 * dt, 3 * dt);
+            meshes[2].Rotate(origin, 0 * dt, 2f * dt, 0 * dt);
+            meshes[3].Rotate(origin, 1 * dt, 0 * dt, 0 * dt);
 
-            FpHandTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
-            FpHandTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
-            FpHandTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
-
-            TpHandTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
-            TpHandTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
-            TpHandTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+            UploadModel(capi);
         }
-        public override void OnGroundIdle(EntityItem entityItem)
-        {
-            base.OnGroundIdle(entityItem);
-            IWorldAccessor world = entityItem.World;
 
-            GroundTransform.Rotation.Y = world.ElapsedMilliseconds / 10f % 360f;
-            GroundTransform.Rotation.Z = world.ElapsedMilliseconds / 10f % 360f;
-            GroundTransform.Rotation.X = world.ElapsedMilliseconds / 10f % 360f;
+        private void CreateModel(ICoreClientAPI capi)
+        {
+            var shapes = new Shape[]
+            {
+                capi.Assets.Get<Shape>(new AssetLocation(ConstantsCore.ModId, "shapes/item/cage/soul.json")),
+                capi.Assets.Get<Shape>(new AssetLocation(ConstantsCore.ModId, "shapes/item/cage/ring1.json")),
+                capi.Assets.Get<Shape>(new AssetLocation(ConstantsCore.ModId, "shapes/item/cage/ring2.json")),
+                capi.Assets.Get<Shape>(new AssetLocation(ConstantsCore.ModId, "shapes/item/cage/ring3.json"))
+            };
+
+            meshes = new MeshData[shapes.Length];
+            for (int i = 0; i < meshes.Length; i++)
+            {
+                capi.Tesselator.TesselateShape(this, shapes[i], out meshes[i]);
+            }
+
+            var origin = new Vec3f(0.5f, 0.5f, 0.5f);
+            meshes[0].Rotate(origin, RandomRotation(), RandomRotation(), RandomRotation());
+            meshes[1].Rotate(origin, 0, 0, RandomRotation());
+            meshes[2].Rotate(origin, 0, RandomRotation(), (float)Math.PI / 2);
+            meshes[3].Rotate(origin, RandomRotation(), 0, 0);
+
+            UploadModel(capi);
+        }
+
+        private float RandomRotation() => 0 * (float)(api.World.Rand.NextDouble() * Math.PI * 2);
+
+        private void UploadModel(ICoreClientAPI capi)
+        {
+            int vertices = 0, indices = 0;
+            foreach (var mesh in meshes)
+            {
+                vertices += mesh.VerticesCount;
+                indices += mesh.IndicesCount;
+            }
+
+            var fullMesh = new MeshData(vertices, indices);
+            foreach (var mesh in meshes)
+            {
+                fullMesh.AddMeshData(mesh);
+            }
+
+            if (model == null)
+            {
+                model = capi.Render.UploadMesh(fullMesh);
+            }
+            else
+            {
+                capi.Render.UpdateMesh(model, fullMesh);
+            }
         }
     }
 }

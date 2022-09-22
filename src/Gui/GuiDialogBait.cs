@@ -77,8 +77,8 @@ namespace CaptureAnimals
             string text;
 
             var baitCode = inventory[0]?.Itemstack?.Collectible?.Code;
-            Core core = capi.ModLoader.GetModSystem<Core>();
-            if (baitCode != null && core.AllBaits.TryGetValue(baitCode, out var captureEntities))
+            var baitsManager = capi.ModLoader.GetModSystem<BaitsManager>();
+            if (baitCode != null && baitsManager.AllBaits.TryGetValue(baitCode, out var captureEntities))
             {
                 Dictionary<string, int> info = new Dictionary<string, int>();
                 foreach (var captureEntity in captureEntities)
