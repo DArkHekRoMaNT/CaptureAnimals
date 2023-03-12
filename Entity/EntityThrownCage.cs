@@ -1,5 +1,4 @@
-﻿using SharedUtils;
-using SharedUtils.Extensions;
+using CommonLib.Utils;
 using System.IO;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
@@ -7,33 +6,29 @@ using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
-using Vintagestory.ServerMods.NoObf;
 
 namespace CaptureAnimals
 {
     public class EntityThrownCage : Entity
     {
-        bool beforeCollided;
-        long launchMs = 0;
-        Vec3d motionBeforeCollide = Vec3d.Zero;
-        BaitsManager baitsManager;
+        private bool _beforeCollided;
+        private long _launchMs = 0;
+        private Vec3d _motionBeforeCollide = Vec3d.Zero;
+        private BaitsManager _baitsManager = null!;
 
-        public Entity FiredBy { get; set; }
-        public float Damage { get; set; }
-        public ItemStack ProjectileStack { get; set; }
+        public Entity? FiredBy { get; set; }
+        public ItemStack ProjectileStack { get; set; } = new ItemStack();
 
         public override bool IsInteractable => false;
-
 
         public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
         {
             base.Initialize(properties, api, InChunkIndex3d);
 
-            baitsManager = Api.ModLoader.GetModSystem<BaitsManager>();
+            _baitsManager = api.ModLoader.GetModSystem<BaitsManager>();
+            _launchMs = World.ElapsedMilliseconds;
 
-            launchMs = World.ElapsedMilliseconds;
-
-            if (ProjectileStack?.Collectible != null)
+            if (ProjectileStack.Collectible != null)
             {
                 ProjectileStack.ResolveBlockOrItem(World);
             }
@@ -82,7 +77,7 @@ namespace CaptureAnimals
         {
             base.OnGameTick(dt);
 
-            if (ShouldDespawn) return;
+            if (ShouldDespawn || ProjectileStack.Collectible is null) return;
 
             if (OnGround && CanCollect(null))
             {
@@ -93,123 +88,142 @@ namespace CaptureAnimals
 
             CollideCheck();
 
-            if (World is IServerWorldAccessor && ((ItemCage)ProjectileStack.Item)?.IsEmpty == true)
+            ItemCage? itemCage = ProjectileStack.Collectible as ItemCage;
+            if (World is IServerWorldAccessor && itemCage?.IsEmpty is true)
             {
-                Entity entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, (e) =>
+                Entity? entity = World.GetNearestEntity(ServerPos.XYZ, 5f, 5f, MatchNearestAnimal);
+                if (entity != null && entity.Alive != false && entity is not EntityPlayer)
                 {
-                    if (e.EntityId == this.EntityId || (FiredBy != null && e.EntityId == FiredBy.EntityId && World.ElapsedMilliseconds - launchMs < 500) || !e.IsInteractable)
-                    {
-                        return false;
-                    }
-
-                    double dist = e.CollisionBox.ToDouble().Translate(e.ServerPos.X, e.ServerPos.Y, e.ServerPos.Z).ShortestDistanceFrom(ServerPos.X, ServerPos.Y, ServerPos.Z);
-                    return dist < 0.5f;
-                });
-
-                if (entity != null && (entity as EntityPlayer) == null && entity.Alive)
-                {
-                    bool didDamage = entity.ReceiveDamage(new DamageSource() { Source = EnumDamageSource.Entity, SourceEntity = FiredBy ?? (this), Type = EnumDamageType.BluntAttack }, Damage);
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.SidedPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
 
-                    if (FiredBy is EntityPlayer && didDamage)
+                    if (entity.GetBehavior("health") is EntityBehaviorHealth healthBehavior)
                     {
-                        World.PlaySoundFor(new AssetLocation("game:sounds/player/projectilehit"), (FiredBy as EntityPlayer).Player, false, 24);
-                    }
-
-                    if (entity.GetBehavior("health") is EntityBehaviorHealth behavior)
-                    {
-                        float captureChance = ProjectileStack.Collectible.Attributes["defaultcapturechance"].AsFloat();
-
-                        ItemStack baitStack = ProjectileStack.Attributes.GetItemstack("bait");
-                        baitStack?.ResolveBlockOrItem(entity.World);
-
-                        if (baitStack != null && baitsManager.AllBaits.TryGetValue(baitStack.Collectible.Code, out var captureEntities))
+                        if (TryCapture(entity, healthBehavior))
                         {
-                            foreach (var captureEntity in captureEntities)
-                            {
-                                if (captureEntity.Code == entity.Code.ToString())
-                                {
-                                    captureChance = captureEntity.CaptureChance;
-                                    break;
-                                }
-                            }
-                        }
-
-                        float efficiency = ProjectileStack.Collectible.Attributes["efficiency"].AsFloat();
-                        captureChance += (1 - behavior.Health / behavior.MaxHealth) * efficiency; // -1% hp = (+1% * efficiency) capture chance
-
-                        if (captureChance < Api.World.Rand.NextDouble())
-                        {
-                            float breakChance = ProjectileStack.Collectible.Attributes["breakchance"].AsFloat();
-                            if (breakChance >= Api.World.Rand.NextDouble())
-                            {
-                                FiredBy.SendMessage(Lang.Get(ConstantsCore.ModId + ":cage-broken"));
-                            }
-                            else
-                            {
-                                FiredBy.SendMessage(Lang.Get(ConstantsCore.ModId + ":cage-mistake"));
-
-                                //Api.World.SpawnItemEntity(ProjectileStack, ServerPos.XYZ);
-                                AssetLocation caseCode = ProjectileStack.Collectible.CodeWithVariant("type", "case");
-                                var caseStack = new ItemStack(Api.World.GetItem(caseCode));
-                                Api.World.SpawnItemEntity(caseStack, ServerPos.XYZ);
-                            }
+                            CaptureSuccess(entity);
                         }
                         else
                         {
-                            AssetLocation location = ProjectileStack.Item?.CodeWithVariant("type", "full");
-                            var full = new ItemStack(Api.World.GetItem(location));
-
-                            entity.ToAttributes(full, "capture");
-                            full.Attributes.SetString("capturename", entity.GetName());
-
-                            Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
-
-                            FiredBy.SendMessage(Lang.Get(ConstantsCore.ModId + ":cage-captured"));
-                            entity.Die(EnumDespawnReason.Removed);
+                            CaptureMiss();
                         }
-
-                        Die();
                     }
                 }
             }
 
-            beforeCollided = false;
-            motionBeforeCollide = SidedPos.Motion.Clone();
+            _beforeCollided = false;
+            _motionBeforeCollide = SidedPos.Motion.Clone();
+        }
+
+        private bool TryCapture(Entity entity, EntityBehaviorHealth healthBehavior)
+        {
+            float captureChance = ProjectileStack.Collectible.Attributes["defaultcapturechance"].AsFloat();
+
+            ItemStack? baitStack = ProjectileStack.Attributes.GetItemstack("bait");
+            baitStack?.ResolveBlockOrItem(entity.World);
+
+            if (baitStack != null && _baitsManager.AllBaits.TryGetValue(baitStack.Collectible.Code, out var captureEntities))
+            {
+                foreach (var captureEntity in captureEntities)
+                {
+                    if (captureEntity.Code == entity.Code.ToString())
+                    {
+                        captureChance = captureEntity.CaptureChance;
+                        break;
+                    }
+                }
+            }
+
+            // -1% hp = (+1% * efficiency) capture chance
+            float efficiency = ProjectileStack.Collectible.Attributes["efficiency"].AsFloat();
+            captureChance += (1 - healthBehavior.Health / healthBehavior.MaxHealth) * efficiency;
+
+            return Api.World.Rand.NextDouble() < captureChance;
+        }
+
+        private void CaptureSuccess(Entity entity)
+        {
+            AssetLocation location = ProjectileStack.Collectible.CodeWithVariant("type", "full");
+            var full = new ItemStack(Api.World.GetItem(location));
+
+            entity.ToAttributes(full, "capture");
+            full.Attributes.SetString("capturename", entity.GetName());
+
+            Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
+
+            FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-captured"));
+            entity.Die(EnumDespawnReason.Removed);
+            Die();
+        }
+
+        private void CaptureMiss()
+        {
+            float breakChance = ProjectileStack.Collectible.Attributes["breakchance"].AsFloat();
+            if (breakChance >= Api.World.Rand.NextDouble())
+            {
+                FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-broken"));
+            }
+            else
+            {
+                FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-mistake"));
+                AssetLocation caseCode = ProjectileStack.Collectible.CodeWithVariant("type", "case");
+                var caseStack = new ItemStack(Api.World.GetItem(caseCode));
+                Api.World.SpawnItemEntity(caseStack, ServerPos.XYZ);
+            }
+            Die();
+        }
+
+        private bool MatchNearestAnimal(Entity entity)
+        {
+            bool itself = entity.EntityId == EntityId;
+            bool isNotInteractable = !entity.IsInteractable;
+            bool isFiredByThisPlayerRightNow =
+                entity.EntityId == FiredBy?.EntityId &&
+                World.ElapsedMilliseconds - _launchMs < 500;
+
+            if (itself || isNotInteractable || isFiredByThisPlayerRightNow)
+            {
+                return false;
+            }
+
+            double dist = entity.CollisionBox.ToDouble()
+                .Translate(entity.ServerPos.X, entity.ServerPos.Y, entity.ServerPos.Z)
+                .ShortestDistanceFrom(ServerPos.X, ServerPos.Y, ServerPos.Z);
+
+            return dist < 0.5f;
         }
 
         private void CollideCheck()
         {
             if (Collided)
             {
-                if (!beforeCollided && World is IServerWorldAccessor)
+                if (!_beforeCollided && World is IServerWorldAccessor)
                 {
-                    float strength = GameMath.Clamp((float)motionBeforeCollide.Length() * 4, 0, 1);
+                    float strength = GameMath.Clamp((float)_motionBeforeCollide.Length() * 4, 0, 1);
 
                     if (CollidedHorizontally)
                     {
-                        SidedPos.Motion.X = motionBeforeCollide.X * 0.8f;
-                        SidedPos.Motion.Z = motionBeforeCollide.Z * 0.8f;
+                        SidedPos.Motion.X = _motionBeforeCollide.X * 0.8f;
+                        SidedPos.Motion.Z = _motionBeforeCollide.Z * 0.8f;
                     }
 
-                    if (CollidedVertically && motionBeforeCollide.Y <= 0)
+                    if (CollidedVertically && _motionBeforeCollide.Y <= 0)
                     {
-                        SidedPos.Motion.Y = GameMath.Clamp(motionBeforeCollide.Y * -0.4f, -0.1f, 0.1f);
+                        SidedPos.Motion.Y = GameMath.Clamp(_motionBeforeCollide.Y * -0.4f, -0.1f, 0.1f);
                     }
 
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32, strength);
                     WatchedAttributes.MarkAllDirty();
                 }
 
-                beforeCollided = true;
+                _beforeCollided = true;
                 return;
             }
         }
 
-        public override bool CanCollect(Entity byEntity)
+        public override bool CanCollect(Entity? byEntity)
         {
-            return Alive && World.ElapsedMilliseconds - launchMs > 1000 && ServerPos.Motion.Length() < 0.01;
+            return Alive && World.ElapsedMilliseconds - _launchMs > 1000 && ServerPos.Motion.Length() < 0.01;
         }
 
         public override ItemStack OnCollected(Entity byEntity)
@@ -220,7 +234,7 @@ namespace CaptureAnimals
 
         public override void OnCollided()
         {
-            if (((ItemCage)ProjectileStack.Item)?.IsFull != true) return;
+            if (ProjectileStack.Collectible is ItemCage cage && !cage.IsFull) return;
 
             Entity entity = EntityUtil.EntityFromAttributes(ProjectileStack.Attributes, "capture", Api.World);
             if (entity != null)
@@ -228,13 +242,12 @@ namespace CaptureAnimals
                 entity.Pos.SetPos(Pos);
                 entity.ServerPos.SetPos(ServerPos);
                 entity.PositionBeforeFalling.Set(Pos.XYZ);
-
                 Api.World.SpawnEntity(entity);
                 Die();
             }
             else
             {
-                FiredBy.SendMessage("Undefined entity in cage!");
+                FiredBy?.SendMessage("Undefined entity in cage!");
                 Die();
             }
         }
@@ -243,7 +256,7 @@ namespace CaptureAnimals
         {
             base.ToBytes(writer, forClient);
 
-            writer.Write(beforeCollided);
+            writer.Write(_beforeCollided);
             ProjectileStack.ToBytes(writer);
         }
 
@@ -251,7 +264,7 @@ namespace CaptureAnimals
         {
             base.FromBytes(reader, fromServer);
 
-            beforeCollided = reader.ReadBoolean();
+            _beforeCollided = reader.ReadBoolean();
             ProjectileStack = World == null ? new ItemStack(reader) : new ItemStack(reader, World);
         }
     }

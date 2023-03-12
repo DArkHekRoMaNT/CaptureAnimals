@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SharedUtils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
@@ -10,13 +9,13 @@ namespace CaptureAnimals
 {
     public class GuiDialogBait : GuiDialogGeneric
     {
-        readonly InventoryCage inventory;
+        private readonly InventoryCage _inventory;
 
         public GuiDialogBait(InventoryCage inventory, ICoreClientAPI capi)
-            : base(Lang.Get(ConstantsCore.ModId + ":bait-dialog-title"), capi)
+            : base(Lang.Get(Constants.ModId + ":bait-dialog-title"), capi)
         {
-            this.inventory = inventory;
-            this.inventory.SlotModified += (int n) => UpdateText();
+            _inventory = inventory;
+            _inventory.SlotModified += n => UpdateText();
 
             InitDialog();
         }
@@ -42,11 +41,11 @@ namespace CaptureAnimals
             bgBounds.fixedHeight = 340;
 
             SingleComposer = capi.Gui
-                .CreateCompo(ConstantsCore.ModId + "-cage-bait-dlg", ElementStdBounds.AutosizedMainDialog)
+                .CreateCompo(Constants.ModId + "-cage-bait-dlg", ElementStdBounds.AutosizedMainDialog)
                 .AddShadedDialogBG(bgBounds, true)
                 .AddDialogTitleBar(DialogTitle, () => TryClose())
                 .BeginChildElements(bgBounds)
-                    .AddItemSlotGrid(inventory, SendInvPacket, 1, slotBounds, "slot")
+                    .AddItemSlotGrid(_inventory, SendInvPacket, 1, slotBounds, "slot")
                     .BeginClip(clippingBounds)
                         .AddInset(insetBounds, 3)
                         .AddDynamicText("", CairoFont.WhiteSmallText().WithOrientation(EnumTextOrientation.Left), textBounds, "text")
@@ -76,14 +75,14 @@ namespace CaptureAnimals
         {
             string text;
 
-            var baitCode = inventory[0]?.Itemstack?.Collectible?.Code;
+            var baitCode = _inventory[0]?.Itemstack?.Collectible?.Code;
             var baitsManager = capi.ModLoader.GetModSystem<BaitsManager>();
             if (baitCode != null && baitsManager.AllBaits.TryGetValue(baitCode, out var captureEntities))
             {
-                Dictionary<string, int> info = new Dictionary<string, int>();
+                var info = new Dictionary<string, int>();
                 foreach (var captureEntity in captureEntities)
                 {
-                    AssetLocation loc = new AssetLocation(captureEntity.Code);
+                    var loc = new AssetLocation(captureEntity.Code);
                     info.Add(
                         Lang.Get(loc.Domain + ":item-creature-" + loc.Path),
                         (int)(captureEntity.CaptureChance * 100f)
@@ -101,19 +100,21 @@ namespace CaptureAnimals
             }
             else
             {
-                text = Lang.Get(ConstantsCore.ModId + ":bait-dialog-placeholder");
+                text = Lang.Get(Constants.ModId + ":bait-dialog-placeholder");
             }
 
             var textElem = SingleComposer.GetDynamicText("text");
             textElem.SetNewText(text);
 
-            SingleComposer.GetScrollbar("scrollbar").SetNewTotalHeight((float)textElem.Bounds.fixedHeight);
+            SingleComposer
+                .GetScrollbar("scrollbar")
+                .SetNewTotalHeight((float)textElem.Bounds.fixedHeight);
         }
 
         public override void OnGuiClosed()
         {
             base.OnGuiClosed();
-            capi.Network.SendPacketClient(inventory.Close(capi.World.Player));
+            capi.Network.SendPacketClient(_inventory.Close(capi.World.Player));
             SingleComposer.GetSlotGrid("slot").OnGuiClosed(capi);
         }
 

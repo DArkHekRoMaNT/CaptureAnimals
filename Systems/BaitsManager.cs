@@ -1,4 +1,5 @@
-﻿using SharedUtils;
+using ProtoBuf;
+using System;
 using System.Collections.Generic;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -12,54 +13,51 @@ namespace CaptureAnimals
     {
         public Dictionary<AssetLocation, List<CaptureEntity>> AllBaits { get; private set; } = new();
 
-        IServerNetworkChannel serverChannel;
-        ICoreAPI api;
+        private IServerNetworkChannel? _serverChannel;
 
         public override double ExecuteOrder() => 1;
 
-        public override void StartPre(ICoreAPI api)
+        public override void StartClientSide(ICoreClientAPI api)
         {
-            this.api = api;
-
-            if (api.Side == EnumAppSide.Client)
-            {
-                (api as ICoreClientAPI).Network
-                    .RegisterChannel(ConstantsCore.ModId)
-                    .RegisterMessageType<Dictionary<AssetLocation, List<CaptureEntity>>>()
-                    .SetMessageHandler<Dictionary<AssetLocation, List<CaptureEntity>>>(OnReceiveAllBaits);
-            }
-            else
-            {
-                serverChannel = (api as ICoreServerAPI).Network
-                    .RegisterChannel(ConstantsCore.ModId)
-                    .RegisterMessageType<Dictionary<AssetLocation, List<CaptureEntity>>>();
-            }
+            api.Network
+                .RegisterChannel(Constants.BaitsManagerNetworkChannelName)
+                .RegisterMessageType<AllBaitsSyncPacket>()
+                .SetMessageHandler<AllBaitsSyncPacket>(OnReceiveAllBaitsSyncPacket);
         }
 
         public override void StartServerSide(ICoreServerAPI api)
         {
-            IAsset baitsAsset = api.Assets.Get(ConstantsCore.ModId + ":config/baits.json");
+            _serverChannel = api.Network
+                .RegisterChannel(Constants.BaitsManagerNetworkChannelName)
+                .RegisterMessageType<AllBaitsSyncPacket>();
+
+            api.Event.PlayerJoin += SendAllBaits;
+
+            IAsset baitsAsset = api.Assets.Get(Constants.ModId + ":config/baits.json");
             ResolveBaits(api, baitsAsset?.ToObject<Bait[]>());
-
-            api.Event.PlayerJoin += (IServerPlayer byPlayer) =>
-            {
-                serverChannel.SendPacket(AllBaits, byPlayer);
-            };
         }
 
-        private void OnReceiveAllBaits(Dictionary<AssetLocation, List<CaptureEntity>> networkMessage)
+        private void SendAllBaits(IServerPlayer forPlayer)
         {
-            AllBaits = networkMessage;
+            _serverChannel!.SendPacket(new AllBaitsSyncPacket
+            {
+                AllBaits = AllBaits
+            }, forPlayer);
         }
 
-        private void ResolveBaits(ICoreServerAPI api, Bait[] baits)
+        private void OnReceiveAllBaitsSyncPacket(AllBaitsSyncPacket networkMessage)
+        {
+            AllBaits = networkMessage.AllBaits;
+        }
+
+        private void ResolveBaits(ICoreServerAPI api, Bait[]? baits)
         {
             if (baits != null)
             {
                 foreach (var bait in baits)
                 {
-                    var entities = ResolveCaptureEntities(bait);
-                    var codes = ResolveBaitCodes(bait);
+                    var entities = ResolveCaptureEntities(api, bait);
+                    var codes = ResolveBaitCodes(api, bait);
 
                     foreach (var code in codes)
                     {
@@ -68,14 +66,13 @@ namespace CaptureAnimals
                 }
             }
 
-            api.World.Logger.Event("{0} baits loaded [CaptureAnimals]", AllBaits.Count);
+            api.World.Logger.Event("{0} baits loaded [{1}]", AllBaits.Count, Mod.Info.ModID);
             api.World.Logger.StoryEvent(Lang.Get("Capturing animals..."));
         }
 
-        private List<CaptureEntity> ResolveCaptureEntities(Bait bait)
+        private static List<CaptureEntity> ResolveCaptureEntities(ICoreAPI api, Bait bait)
         {
             var entities = new List<CaptureEntity>();
-
             foreach (var captureEntity in bait.Entities)
             {
                 var captureEntityCode = new AssetLocation(captureEntity.Code);
@@ -94,20 +91,14 @@ namespace CaptureAnimals
                     }
                 }
             }
-
             return entities;
         }
 
-        private List<AssetLocation> ResolveBaitCodes(Bait bait)
+        private static List<AssetLocation> ResolveBaitCodes(ICoreAPI api, Bait bait)
         {
             var codes = new List<AssetLocation>();
-
             var key = new AssetLocation(bait.Code);
-            if (!key.IsWildCard)
-            {
-                codes.Add(key);
-            }
-            else
+            if (key.IsWildCard)
             {
                 if (bait.Type == "item")
                 {
@@ -130,9 +121,41 @@ namespace CaptureAnimals
                     }
                 }
             }
-
+            else
+            {
+                codes.Add(key);
+            }
             return codes;
         }
 
+        [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
+        private struct AllBaitsSyncPacket
+        {
+            public Dictionary<AssetLocation, List<CaptureEntity>> AllBaits { get; set; }
+        }
+
+
+        [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
+        public class CaptureEntity
+        {
+            public string Code { get; set; } = "";
+            public float CaptureChance { get; set; } = 0;
+
+            public CaptureEntity WithCode(AssetLocation code)
+            {
+                return new CaptureEntity()
+                {
+                    Code = code + "",
+                    CaptureChance = CaptureChance
+                };
+            }
+        }
+
+        public class Bait
+        {
+            public string Type { get; set; } = "";
+            public string Code { get; set; } = "";
+            public CaptureEntity[] Entities { get; set; } = Array.Empty<CaptureEntity>();
+        }
     }
 }
