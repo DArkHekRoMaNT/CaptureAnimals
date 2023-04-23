@@ -242,7 +242,7 @@ namespace CaptureAnimals
                 return;
             }
 
-            Entity entity = EntityUtil.EntityFromAttributes(ProjectileStack.Attributes, "capture", Api.World);
+            Entity? entity = EntityUtil.EntityFromAttributes(ProjectileStack.Attributes, "capture", Api.World);
             if (entity != null)
             {
                 entity.Pos.SetPos(Pos);

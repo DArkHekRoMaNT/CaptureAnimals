@@ -232,13 +232,13 @@ namespace CaptureAnimals
                 float dt = api.World.ElapsedMilliseconds - _lastRenderMs;
                 _lastRenderMs = api.World.ElapsedMilliseconds;
 
-                UpdateModel(capi, itemstack, dt / 1000);
+                UpdateModel(capi, dt / 1000);
 
                 renderinfo.ModelRef = _model;
             }
         }
 
-        private void UpdateModel(ICoreClientAPI capi, ItemStack itemstack, float dt)
+        private void UpdateModel(ICoreClientAPI capi, float dt)
         {
             var origin = new Vec3f(0.5f, 0.5f, 0.5f);
             _meshes[0].Rotate(origin, 4 * dt, 4 * dt, 4 * dt);

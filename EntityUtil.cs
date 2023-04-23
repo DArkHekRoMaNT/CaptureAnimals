@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
@@ -23,7 +23,7 @@ namespace CaptureAnimals
             }
         }
 
-        public static Entity EntityFromAttributes(ITreeAttribute tree, string key, IWorldAccessor world)
+        public static Entity? EntityFromAttributes(ITreeAttribute tree, string key, IWorldAccessor world)
         {
             string value = tree.GetString(key, null);
             if (value is null)
@@ -44,4 +44,3 @@ namespace CaptureAnimals
         }
     }
 }
-
