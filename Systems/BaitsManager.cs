@@ -15,7 +15,10 @@ namespace CaptureAnimals
 
         private IServerNetworkChannel? _serverChannel;
 
-        public override double ExecuteOrder() => 1;
+        public override double ExecuteOrder()
+        {
+            return 1;
+        }
 
         public override void StartClientSide(ICoreClientAPI api)
         {
@@ -33,7 +36,7 @@ namespace CaptureAnimals
 
             api.Event.PlayerJoin += SendAllBaits;
 
-            IAsset baitsAsset = api.Assets.Get(Constants.ModId + ":config/baits.json");
+            IAsset baitsAsset = api.Assets.Get($"{Constants.ModId}:config/baits.json");
             ResolveBaits(api, baitsAsset?.ToObject<Bait[]>());
         }
 
@@ -138,14 +141,14 @@ namespace CaptureAnimals
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
         public class CaptureEntity
         {
-            public string Code { get; set; } = "";
+            public string Code { get; set; } = string.Empty;
             public float CaptureChance { get; set; } = 0;
 
             public CaptureEntity WithCode(AssetLocation code)
             {
-                return new CaptureEntity()
+                return new CaptureEntity
                 {
-                    Code = code + "",
+                    Code = $"{code}",
                     CaptureChance = CaptureChance
                 };
             }
@@ -153,8 +156,8 @@ namespace CaptureAnimals
 
         public class Bait
         {
-            public string Type { get; set; } = "";
-            public string Code { get; set; } = "";
+            public string Type { get; set; } = string.Empty;
+            public string Code { get; set; } = string.Empty;
             public CaptureEntity[] Entities { get; set; } = Array.Empty<CaptureEntity>();
         }
     }

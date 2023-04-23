@@ -49,7 +49,9 @@ namespace CaptureAnimals
         {
             if (byEntity.Attributes.GetInt("aimingCancel") == 1 ||
                 byEntity.Attributes.GetInt("opengui") == 1)
+            {
                 return false;
+            }
 
             if (byEntity.World is IClientWorldAccessor)
             {
@@ -115,7 +117,7 @@ namespace CaptureAnimals
             byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"),
                 byEntity, entityPlayer?.Player, false, 8);
 
-            var code = new AssetLocation(Constants.ModId, "thrown" + stack.Item.Code.Path);
+            var code = new AssetLocation(Constants.ModId, $"thrown{stack.Item.Code.Path}");
             EntityProperties type = byEntity.World.GetEntityType(code);
             var entity = (EntityThrownCage)byEntity.World.ClassRegistry.CreateEntity(type);
             entity.FiredBy = byEntity;
@@ -147,14 +149,14 @@ namespace CaptureAnimals
             {
                 return new WorldInteraction[]
                 {
-                    new WorldInteraction()
+                    new WorldInteraction
                     {
-                        ActionLangCode = Constants.ModId + ":heldhelp-cage-throw-empty",
+                        ActionLangCode = $"{Constants.ModId}:heldhelp-cage-throw-empty",
                         MouseButton = EnumMouseButton.Right
                     },
-                    new WorldInteraction()
+                    new WorldInteraction
                     {
-                        ActionLangCode = Constants.ModId + ":heldhelp-cage-open",
+                        ActionLangCode = $"{Constants.ModId}:heldhelp-cage-open",
                         MouseButton = EnumMouseButton.Right,
                         HotKeyCode = "sneak"
                     }
@@ -164,14 +166,17 @@ namespace CaptureAnimals
             {
                 return new WorldInteraction[]
                 {
-                    new WorldInteraction()
+                    new WorldInteraction
                     {
-                        ActionLangCode = Constants.ModId + ":heldhelp-cage-throw-full",
+                        ActionLangCode = $"{Constants.ModId}:heldhelp-cage-throw-full",
                         MouseButton = EnumMouseButton.Right
                     }
                 };
             }
-            else return base.GetHeldInteractionHelp(inSlot);
+            else
+            {
+                return base.GetHeldInteractionHelp(inSlot);
+            }
         }
 
         public override void GetHeldItemInfo(ItemSlot inSlot, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
@@ -181,11 +186,11 @@ namespace CaptureAnimals
             if (IsEmpty)
             {
                 dsc.AppendLine(Lang.Get(
-                    Constants.ModId + ":heldinfo-cage-empty-breakchance",
+                    $"{Constants.ModId}:heldinfo-cage-empty-breakchance",
                     (int)(Attributes["breakchance"].AsFloat() * 100f)
                 ));
                 dsc.AppendLine(Lang.Get(
-                    Constants.ModId + ":heldinfo-cage-empty-efficiency",
+                    $"{Constants.ModId}:heldinfo-cage-empty-efficiency",
                     (int)(Attributes["efficiency"].AsFloat() * 100f)
                 ));
 
@@ -194,7 +199,7 @@ namespace CaptureAnimals
                 {
                     bait.ResolveBlockOrItem(api.World);
                     dsc.AppendLine(Lang.Get(
-                        Constants.ModId + ":heldinfo-cage-empty-bait",
+                        $"{Constants.ModId}:heldinfo-cage-empty-bait",
                         bait.GetName()
                     ));
                 }
@@ -202,10 +207,10 @@ namespace CaptureAnimals
             else if (IsFull)
             {
                 dsc.AppendLine(Lang.Get(
-                    Constants.ModId + ":heldinfo-cage-full-entityname",
+                    $"{Constants.ModId}:heldinfo-cage-full-entityname",
                     inSlot.Itemstack.Attributes.GetString(
                         "capturename",
-                        Lang.Get(Constants.ModId + ":nothing")
+                        Lang.Get($"{Constants.ModId}:nothing")
                     )
                 ));
             }
@@ -263,13 +268,16 @@ namespace CaptureAnimals
             var origin = new Vec3f(0.5f, 0.5f, 0.5f);
             _meshes[0].Rotate(origin, RandomRotation(), RandomRotation(), RandomRotation());
             _meshes[1].Rotate(origin, 0, 0, RandomRotation());
-            _meshes[2].Rotate(origin, 0, RandomRotation(), (float)Math.PI / 2);
+            _meshes[2].Rotate(origin, 0, RandomRotation(), ((float)Math.PI) / 2);
             _meshes[3].Rotate(origin, RandomRotation(), 0, 0);
 
             UploadModel(capi);
         }
 
-        private float RandomRotation() => 0 * (float)(api.World.Rand.NextDouble() * Math.PI * 2);
+        private float RandomRotation()
+        {
+            return 0 * (float)(api.World.Rand.NextDouble() * Math.PI * 2);
+        }
 
         private void UploadModel(ICoreClientAPI capi)
         {

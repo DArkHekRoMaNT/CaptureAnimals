@@ -35,7 +35,7 @@ namespace CaptureAnimals
 
             if (api.Side == EnumAppSide.Client)
             {
-                AnimManager.StartAnimation(new AnimationMetaData()
+                AnimManager.StartAnimation(new AnimationMetaData
                 {
                     Code = "soul",
                     Animation = "soul",
@@ -44,7 +44,7 @@ namespace CaptureAnimals
                     AnimationSpeed = 0.5f
                 });
 
-                AnimManager.StartAnimation(new AnimationMetaData()
+                AnimManager.StartAnimation(new AnimationMetaData
                 {
                     Code = "ring1",
                     Animation = "ring1",
@@ -53,7 +53,7 @@ namespace CaptureAnimals
                     AnimationSpeed = 0.5f
                 });
 
-                AnimManager.StartAnimation(new AnimationMetaData()
+                AnimManager.StartAnimation(new AnimationMetaData
                 {
                     Code = "ring2",
                     Animation = "ring2",
@@ -62,7 +62,7 @@ namespace CaptureAnimals
                     AnimationSpeed = 0.5f
                 });
 
-                AnimManager.StartAnimation(new AnimationMetaData()
+                AnimManager.StartAnimation(new AnimationMetaData
                 {
                     Code = "ring3",
                     Animation = "ring3",
@@ -77,7 +77,10 @@ namespace CaptureAnimals
         {
             base.OnGameTick(dt);
 
-            if (ShouldDespawn || ProjectileStack.Collectible is null) return;
+            if (ShouldDespawn || (ProjectileStack.Collectible is null))
+            {
+                return;
+            }
 
             if (OnGround && CanCollect(null))
             {
@@ -151,7 +154,7 @@ namespace CaptureAnimals
 
             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
-            FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-captured"));
+            FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-captured"));
             entity.Die(EnumDespawnReason.Removed);
             Die();
         }
@@ -161,11 +164,11 @@ namespace CaptureAnimals
             float breakChance = ProjectileStack.Collectible.Attributes["breakchance"].AsFloat();
             if (breakChance >= Api.World.Rand.NextDouble())
             {
-                FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-broken"));
+                FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-broken"));
             }
             else
             {
-                FiredBy?.SendMessage(Lang.Get(Constants.ModId + ":cage-mistake"));
+                FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-mistake"));
                 AssetLocation caseCode = ProjectileStack.Collectible.CodeWithVariant("type", "case");
                 var caseStack = new ItemStack(Api.World.GetItem(caseCode));
                 Api.World.SpawnItemEntity(caseStack, ServerPos.XYZ);
@@ -234,7 +237,10 @@ namespace CaptureAnimals
 
         public override void OnCollided()
         {
-            if (ProjectileStack.Collectible is ItemCage cage && !cage.IsFull) return;
+            if (ProjectileStack.Collectible is ItemCage cage && !cage.IsFull)
+            {
+                return;
+            }
 
             Entity entity = EntityUtil.EntityFromAttributes(ProjectileStack.Attributes, "capture", Api.World);
             if (entity != null)
@@ -269,4 +275,3 @@ namespace CaptureAnimals
         }
     }
 }
-

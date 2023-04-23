@@ -12,7 +12,7 @@ namespace CaptureAnimals
         private readonly InventoryCage _inventory;
 
         public GuiDialogBait(InventoryCage inventory, ICoreClientAPI capi)
-            : base(Lang.Get(Constants.ModId + ":bait-dialog-title"), capi)
+            : base(Lang.Get($"{Constants.ModId}:bait-dialog-title"), capi)
         {
             _inventory = inventory;
             _inventory.SlotModified += n => UpdateText();
@@ -41,14 +41,14 @@ namespace CaptureAnimals
             bgBounds.fixedHeight = 340;
 
             SingleComposer = capi.Gui
-                .CreateCompo(Constants.ModId + "-cage-bait-dlg", ElementStdBounds.AutosizedMainDialog)
+                .CreateCompo($"{Constants.ModId}-cage-bait-dlg", ElementStdBounds.AutosizedMainDialog)
                 .AddShadedDialogBG(bgBounds, true)
                 .AddDialogTitleBar(DialogTitle, () => TryClose())
                 .BeginChildElements(bgBounds)
                     .AddItemSlotGrid(_inventory, SendInvPacket, 1, slotBounds, "slot")
                     .BeginClip(clippingBounds)
                         .AddInset(insetBounds, 3)
-                        .AddDynamicText("", CairoFont.WhiteSmallText().WithOrientation(EnumTextOrientation.Left), textBounds, "text")
+                        .AddDynamicText(string.Empty, CairoFont.WhiteSmallText().WithOrientation(EnumTextOrientation.Left), textBounds, "text")
                     .EndClip()
                     .AddVerticalScrollbar(OnNewScrollbarvalue, scrollbarBounds, "scrollbar")
                 .EndChildElements()
@@ -84,23 +84,23 @@ namespace CaptureAnimals
                 {
                     var loc = new AssetLocation(captureEntity.Code);
                     info.Add(
-                        Lang.Get(loc.Domain + ":item-creature-" + loc.Path),
+                        Lang.Get($"{loc.Domain}:item-creature-{loc.Path}"),
                         (int)(captureEntity.CaptureChance * 100f)
                     );
                 }
 
                 var orderedInfo = info.OrderBy((e) => e.Key).OrderBy((e) => e.Value);
-                StringBuilder str = new StringBuilder();
+                var sb = new StringBuilder();
                 foreach (var el in orderedInfo)
                 {
-                    str.AppendLine(el.Value + "%: " + el.Key);
+                    sb.AppendLine($"{el.Value}%: {el.Key}");
                 }
 
-                text = str + "";
+                text = $"{sb}";
             }
             else
             {
-                text = Lang.Get(Constants.ModId + ":bait-dialog-placeholder");
+                text = Lang.Get($"{Constants.ModId}:bait-dialog-placeholder");
             }
 
             var textElem = SingleComposer.GetDynamicText("text");

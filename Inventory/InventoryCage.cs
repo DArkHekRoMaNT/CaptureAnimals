@@ -5,14 +5,14 @@ namespace CaptureAnimals
 {
     public class InventoryCage : InventoryGeneric
     {
-        readonly ItemSlot cageSlot;
-        private GuiDialogBait invDialog;
+        private readonly ItemSlot _cageSlot;
+        private GuiDialogBait? _invDialog;
 
 
         public InventoryCage(IPlayer player, ItemSlot cageSlot)
             : base(1, "inventoryCage", player.PlayerUID, player.Entity.Api)
         {
-            this.cageSlot = cageSlot;
+            _cageSlot = cageSlot;
             slots[0].MaxSlotStackSize = 1;
             SyncFromCageStack();
 
@@ -25,16 +25,16 @@ namespace CaptureAnimals
         {
             if (player.Entity.Api is ICoreClientAPI capi)
             {
-                invDialog = new GuiDialogBait(this, capi);
-                invDialog.TryOpen();
+                _invDialog = new GuiDialogBait(this, capi);
+                _invDialog.TryOpen();
             }
         }
 
         private void OnInvClosed(IPlayer player)
         {
             SyncToCageStack();
-            invDialog?.Dispose();
-            invDialog = null;
+            _invDialog?.Dispose();
+            _invDialog = null;
         }
 
         private void OnSlotModified(int n)
@@ -44,13 +44,13 @@ namespace CaptureAnimals
 
         public void SyncToCageStack()
         {
-            cageSlot.Itemstack.Attributes.SetItemstack("bait", slots[0].Itemstack);
-            cageSlot.MarkDirty();
+            _cageSlot.Itemstack.Attributes.SetItemstack("bait", slots[0].Itemstack);
+            _cageSlot.MarkDirty();
         }
 
         public void SyncFromCageStack()
         {
-            slots[0].Itemstack = cageSlot.Itemstack.Attributes.GetItemstack("bait");
+            slots[0].Itemstack = _cageSlot.Itemstack.Attributes.GetItemstack("bait");
             slots[0].Itemstack?.ResolveBlockOrItem(Api.World);
         }
     }
