@@ -35,6 +35,7 @@
   "heldinfo-cage-empty-breakchance": "Шанс сломаться: {0}%",
   "heldinfo-cage-empty-efficiency": "Эффективность: {0}%",
   "heldinfo-cage-empty-bait": "Содержит: {0}",
+  "heldinfo-cage-empty-baitlist": "Доступные приманки:",
   "heldinfo-cage-full-entityname": "Содержит: {0}",
 
   "bait-dialog-title": "Инвентарь клетки",

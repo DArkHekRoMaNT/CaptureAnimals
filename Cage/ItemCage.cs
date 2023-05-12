@@ -1,10 +1,13 @@
+using CommonLib.Utils;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
+using Vintagestory.GameContent;
 
 namespace CaptureAnimals
 {
@@ -17,6 +20,13 @@ namespace CaptureAnimals
         private long _lastRenderMs = 0;
         private MeshData[] _meshes = Array.Empty<MeshData>();
         private MeshRef? _model;
+        private BaitsManager _baitsManager = null!;
+
+        public override void OnLoaded(ICoreAPI api)
+        {
+            base.OnLoaded(api);
+            _baitsManager = api.ModLoader.GetModSystem<BaitsManager>();
+        }
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
@@ -202,6 +212,23 @@ namespace CaptureAnimals
                         $"{Constants.ModId}:heldinfo-cage-empty-bait",
                         bait.GetName()
                     ));
+                }
+                else
+                {
+                    dsc.AppendLine(Lang.Get($"{Constants.ModId}:heldinfo-cage-empty-baitlist"));
+                    foreach (AssetLocation key in _baitsManager.AllBaits.Keys)
+                    {
+                        if (api.World.GetBlock(key) != null)
+                        {
+                            string langkey = key.Clone().WithLocationPrefixOnce(new("block-")).ToString();
+                            dsc.AppendLine($"\t{Lang.Get(langkey)}");
+                        }
+                        else if (api.World.GetItem(key) != null)
+                        {
+                            string langkey = key.Clone().WithLocationPrefixOnce(new("item-")).ToString();
+                            dsc.AppendLine($"\t{Lang.Get(langkey)}");
+                        }
+                    }
                 }
             }
             else if (IsFull)

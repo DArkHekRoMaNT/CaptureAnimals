@@ -37,6 +37,7 @@
   "heldinfo-cage-empty-breakchance": "Break chance: {0}%",
   "heldinfo-cage-empty-efficiency": "Efficiency: {0}%",
   "heldinfo-cage-empty-bait": "Contains: {0}",
+  "heldinfo-cage-empty-baitlist": "Available baits:",
   "heldinfo-cage-full-entityname": "Contains: {0}",
 
   "bait-dialog-title": "Cage inventory",
