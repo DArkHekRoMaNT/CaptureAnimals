@@ -6,14 +6,8 @@
     "y": 0.5
   },
   "variantgroups": [
-    {
-      "code": "type",
-      "states": [ "case", "empty", "full" ]
-    },
-    {
-      "code": "metal",
-      "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ]
-    }
+    { "code": "type", "states": [ "case", "empty", "full" ] },
+    { "code": "metal", "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ] }
   ],
   "client": {
     "renderer": "Shape",
@@ -86,10 +80,7 @@
   "server": {
     "behaviors": [
       { "code": "passivephysics" },
-      {
-        "code": "despawn",
-        "minSeconds": 300
-      },
+      { "code": "despawn", "minSeconds": 300 },
       { "code": "floatupwhenstuck" }
     ]
   },

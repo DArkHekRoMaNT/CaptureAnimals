@@ -1,15 +1,9 @@
-﻿{
+{
   "code": "cage",
   "class": "ItemCage",
   "variantgroups": [
-    {
-      "code": "type",
-      "states": [ "case", "empty", "full" ]
-    },
-    {
-      "code": "metal",
-      "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ]
-    }
+    { "code": "type", "states": [ "case", "empty", "full" ] },
+    { "code": "metal", "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ] }
   ],
   "shapeByType": {
     "*-case-*": { "base": "item/cage/case" },
@@ -35,12 +29,7 @@
       "case": { "base": "game:block/metal/plate/{metal}" }
     }
   },
-  "creativeinventory": {
-    "general": [ "*" ],
-    "items": [ "*" ],
-    "tools": [ "*-empty-*" ],
-    "captureanimals": [ "*" ]
-  },
+  "creativeinventory": { "general": [ "*" ], "items": [ "*" ], "tools": [ "*-empty-*" ], "captureanimals": [ "*" ] },
   "maxstacksize": 1,
   "attributes": {
     "handbook": {
@@ -52,11 +41,7 @@
     },
     "shelvable": true,
     "onDisplayTransform": {
-      "translation": {
-        "x": 0,
-        "y": -0.49,
-        "z": 0
-      },
+      "translation": { "x": 0, "y": -0.49, "z": 0 },
       "scale": 0.33
     },
     "capturename": "captureanimals:nothing",
@@ -83,54 +68,22 @@
     }
   },
   "tpHandTransform": {
-    "translation": {
-      "x": -2.2,
-      "y": -2.4,
-      "z": -2.1
-    },
-    "rotation": {
-      "x": 79,
-      "y": -62,
-      "z": 18
-    },
+    "translation": { "x": -2.2, "y": -2.4, "z": -2.1 },
+    "rotation": { "x": 79, "y": -62, "z": 18 },
     "scale": 0.25
   },
   "fpHandTransform": {
-    "rotation": {
-      "x": 90,
-      "y": 90,
-      "z": -30
-    }
+    "rotation": { "x": 90, "y": 90, "z": -30 }
   },
   "groundTransform": {
-    "translation": {
-      "x": 0,
-      "y": 0.5,
-      "z": 0
-    },
-    "origin": {
-      "x": 0.5,
-      "y": 0.5,
-      "z": 0.5
-    },
+    "translation": { "x": 0, "y": 0.5, "z": 0 },
+    "origin": { "x": 0.5, "y": 0.5, "z": 0.5 },
     "scale": 2
   },
   "guiTransform": {
-    "translation": {
-      "x": 3,
-      "y": 1,
-      "z": 0
-    },
-    "rotation": {
-      "x": 90,
-      "y": 0,
-      "z": 0
-    },
-    "origin": {
-      "x": 0.5,
-      "y": 0.5,
-      "z": 0.5
-    },
+    "translation": { "x": 3, "y": 1, "z": 0 },
+    "rotation": { "x": 90, "y": 0, "z": 0 },
+    "origin": { "x": 0.5, "y": 0.5, "z": 0.5 },
     "scale": 1.5
   }
 }
