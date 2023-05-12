@@ -40,7 +40,7 @@
       }
     },
     "shelvable": true,
-    "onDisplayTransform": {
+    "onShelfTransform": {
       "translation": { "x": 0, "y": -0.49, "z": 0 },
       "scale": 0.33
     },
