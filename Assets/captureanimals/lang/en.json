@@ -23,7 +23,8 @@
   "item-cage-full-meteoriciron": "Meteoric iron cage",
   "item-cage-full-steel": "Steel cage",
   "item-cage-full-creative": "Creative cage",
-
+  
+  "cage-notallowed": "This animal cannot be captured",
   "cage-mistake": "Failed to capture the animal (weakened animals are easier to capture)",
   "cage-broken": "Cage broken...",
   "cage-captured": "Animal captured!",

@@ -23,7 +23,8 @@
   "item-cage-full-meteoriciron": "Клетка из метеоритного железа",
   "item-cage-full-steel": "Клетка из стали",
   "item-cage-full-creative": "Креативная клетка",
-
+  
+  "cage-notallowed": "Это животное не может быть захвачено",
   "cage-mistake": "Не удалось поймать животное (ослабленных животных ловить легче)",
   "cage-broken": "Клетка сломалась...",
   "cage-captured": "Животное захвачено!",
