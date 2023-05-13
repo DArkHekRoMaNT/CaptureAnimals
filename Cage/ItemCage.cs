@@ -231,16 +231,19 @@ namespace CaptureAnimals
                     }
                 }
             }
-            else if (IsFull)
+        }
+
+        public override string GetHeldItemName(ItemStack itemStack)
             {
-                dsc.AppendLine(Lang.Get(
-                    $"{Constants.ModId}:heldinfo-cage-full-entityname",
-                    inSlot.Itemstack.Attributes.GetString(
-                        "capturename",
-                        Lang.Get($"{Constants.ModId}:nothing")
-                    )
-                ));
+            string cageName = base.GetHeldItemName(itemStack);
+
+            if (IsFull)
+            {
+                string contentName = itemStack.Attributes.GetString("capturename", Lang.Get($"{Constants.ModId}:nothing"));
+                return Lang.Get("{0} with {1}", cageName, contentName);
             }
+
+            return cageName;
         }
 
         public override void OnBeforeRender(ICoreClientAPI capi, ItemStack itemstack, EnumItemRenderTarget target, ref ItemRenderInfo renderinfo)
