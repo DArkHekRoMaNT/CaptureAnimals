@@ -5,7 +5,6 @@ using System.Linq;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Util;
-using Vintagestory.GameContent;
 
 namespace CaptureAnimals
 {
