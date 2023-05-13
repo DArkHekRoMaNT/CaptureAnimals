@@ -1,5 +1,7 @@
+using CommonLib.Config;
 using CommonLib.Utils;
 using System.IO;
+using System.Linq;
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
@@ -15,6 +17,7 @@ namespace CaptureAnimals
         private long _launchMs = 0;
         private Vec3d _motionBeforeCollide = Vec3d.Zero;
         private BaitsManager _baitsManager = null!;
+        private Config _config = null!;
 
         public Entity? FiredBy { get; set; }
         public ItemStack ProjectileStack { get; set; } = new ItemStack();
@@ -24,6 +27,9 @@ namespace CaptureAnimals
         public override void Initialize(EntityProperties properties, ICoreAPI api, long InChunkIndex3d)
         {
             base.Initialize(properties, api, InChunkIndex3d);
+
+            var configs = api.ModLoader.GetModSystem<ConfigManager>();
+            _config = configs.GetConfig<Config>();
 
             _baitsManager = api.ModLoader.GetModSystem<BaitsManager>();
             _launchMs = World.ElapsedMilliseconds;
@@ -100,7 +106,7 @@ namespace CaptureAnimals
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.SidedPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
 
-                    if (entity.GetBehavior("health") is EntityBehaviorHealth healthBehavior)
+                    if (entity.GetBehavior("health") is EntityBehaviorHealth healthBehavior && CanCapture(entity))
                     {
                         if (TryCapture(entity, healthBehavior))
                         {
@@ -116,6 +122,13 @@ namespace CaptureAnimals
 
             _beforeCollided = false;
             _motionBeforeCollide = SidedPos.Motion.Clone();
+
+            bool CanCapture(Entity entity)
+            {
+                return _config
+                    .GetAvailableEntities(entity.Api)
+                    .Contains(entity.Code.ToString());
+            }
         }
 
         private bool TryCapture(Entity entity, EntityBehaviorHealth healthBehavior)
