@@ -106,49 +106,49 @@ namespace CaptureAnimals
 
             if (secondsUsed > 0.35f)
             {
-                Throw(slot, byEntity);
+                Throw();
             }
-        }
 
-        private static void Throw(ItemSlot slot, EntityAgent byEntity)
-        {
-            ItemStack stack;
-            EntityPlayer? entityPlayer = byEntity as EntityPlayer;
-            if (entityPlayer?.Player.WorldData.CurrentGameMode != EnumGameMode.Creative)
+            void Throw()
             {
-                stack = slot.TakeOut(1);
+                ItemStack stack;
+                EntityPlayer? entityPlayer = byEntity as EntityPlayer;
+                if (entityPlayer?.Player.WorldData.CurrentGameMode != EnumGameMode.Creative)
+                {
+                    stack = slot.TakeOut(1);
+                }
+                else
+                {
+                    stack = slot.TakeOut(0);
+                    stack.StackSize = 1;
+                }
+                slot.MarkDirty();
+                byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"),
+                    byEntity, entityPlayer?.Player, false, 8);
+
+                var code = new AssetLocation(Constants.ModId, $"thrown{stack.Item.Code.Path}");
+                EntityProperties type = byEntity.World.GetEntityType(code);
+                var entity = (EntityThrownCage)byEntity.World.ClassRegistry.CreateEntity(type);
+                entity.FiredBy = byEntity;
+                entity.ProjectileStack = stack;
+
+                float accuracy = 1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0);
+                double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * accuracy * 0.75;
+                double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * accuracy * 0.75;
+
+                Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0);
+                Vec3d aheadPos = pos.AheadCopy(1, byEntity.ServerPos.Pitch + rndpitch, byEntity.ServerPos.Yaw + rndyaw);
+                Vec3d velocity = (aheadPos - pos) * 0.5;
+
+                Vec3d startPos = byEntity.ServerPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0);
+                entity.ServerPos.SetPos(startPos);
+                entity.ServerPos.Motion.Set(velocity);
+                entity.Pos.SetFrom(entity.ServerPos);
+                entity.World = byEntity.World;
+
+                byEntity.World.SpawnEntity(entity);
+                byEntity.StartAnimation("throw");
             }
-            else
-            {
-                stack = slot.TakeOut(0);
-                stack.StackSize = 1;
-            }
-            slot.MarkDirty();
-            byEntity.World.PlaySoundAt(new AssetLocation("game:sounds/player/throw"),
-                byEntity, entityPlayer?.Player, false, 8);
-
-            var code = new AssetLocation(Constants.ModId, $"thrown{stack.Item.Code.Path}");
-            EntityProperties type = byEntity.World.GetEntityType(code);
-            var entity = (EntityThrownCage)byEntity.World.ClassRegistry.CreateEntity(type);
-            entity.FiredBy = byEntity;
-            entity.ProjectileStack = stack;
-
-            float accuracy = 1 - byEntity.Attributes.GetFloat("aimingAccuracy", 0);
-            double rndpitch = byEntity.WatchedAttributes.GetDouble("aimingRandPitch", 1) * accuracy * 0.75;
-            double rndyaw = byEntity.WatchedAttributes.GetDouble("aimingRandYaw", 1) * accuracy * 0.75;
-
-            Vec3d pos = byEntity.ServerPos.XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0);
-            Vec3d aheadPos = pos.AheadCopy(1, byEntity.ServerPos.Pitch + rndpitch, byEntity.ServerPos.Yaw + rndyaw);
-            Vec3d velocity = (aheadPos - pos) * 0.5;
-
-            Vec3d startPos = byEntity.ServerPos.BehindCopy(0.21).XYZ.Add(0, byEntity.LocalEyePos.Y - 0.2, 0);
-            entity.ServerPos.SetPos(startPos);
-            entity.ServerPos.Motion.Set(velocity);
-            entity.Pos.SetFrom(entity.ServerPos);
-            entity.World = byEntity.World;
-
-            byEntity.World.SpawnEntity(entity);
-            byEntity.StartAnimation("throw");
         }
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
@@ -234,7 +234,7 @@ namespace CaptureAnimals
         }
 
         public override string GetHeldItemName(ItemStack itemStack)
-            {
+        {
             string cageName = base.GetHeldItemName(itemStack);
 
             if (IsFull)
@@ -266,71 +266,71 @@ namespace CaptureAnimals
 
                 renderinfo.ModelRef = _model;
             }
-        }
 
-        private void UpdateModel(ICoreClientAPI capi, float dt)
-        {
-            var origin = new Vec3f(0.5f, 0.5f, 0.5f);
-            _meshes[0].Rotate(origin, 4 * dt, 4 * dt, 4 * dt);
-            _meshes[1].Rotate(origin, 0 * dt, 0 * dt, 3 * dt);
-            _meshes[2].Rotate(origin, 0 * dt, 2f * dt, 0 * dt);
-            _meshes[3].Rotate(origin, 1 * dt, 0 * dt, 0 * dt);
-
-            UploadModel(capi);
-        }
-
-        private void CreateModel(ICoreClientAPI capi)
-        {
-            var shapes = new Shape[]
+            void CreateModel(ICoreClientAPI capi)
             {
-                capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/soul.json")),
-                capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring1.json")),
-                capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring2.json")),
-                capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring3.json"))
-            };
+                var shapes = new Shape[]
+                {
+                    capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/soul.json")),
+                    capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring1.json")),
+                    capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring2.json")),
+                    capi.Assets.Get<Shape>(new AssetLocation(Constants.ModId, "shapes/item/cage/ring3.json"))
+                };
 
-            _meshes = new MeshData[shapes.Length];
-            for (int i = 0; i < _meshes.Length; i++)
-            {
-                capi.Tesselator.TesselateShape(this, shapes[i], out _meshes[i]);
+                _meshes = new MeshData[shapes.Length];
+                for (int i = 0; i < _meshes.Length; i++)
+                {
+                    capi.Tesselator.TesselateShape(this, shapes[i], out _meshes[i]);
+                }
+
+                var origin = new Vec3f(0.5f, 0.5f, 0.5f);
+                _meshes[0].Rotate(origin, RandomRotation(), RandomRotation(), RandomRotation());
+                _meshes[1].Rotate(origin, 0, 0, RandomRotation());
+                _meshes[2].Rotate(origin, 0, RandomRotation(), ((float)Math.PI) / 2);
+                _meshes[3].Rotate(origin, RandomRotation(), 0, 0);
+
+                UploadModel(capi);
             }
 
-            var origin = new Vec3f(0.5f, 0.5f, 0.5f);
-            _meshes[0].Rotate(origin, RandomRotation(), RandomRotation(), RandomRotation());
-            _meshes[1].Rotate(origin, 0, 0, RandomRotation());
-            _meshes[2].Rotate(origin, 0, RandomRotation(), ((float)Math.PI) / 2);
-            _meshes[3].Rotate(origin, RandomRotation(), 0, 0);
-
-            UploadModel(capi);
-        }
-
-        private float RandomRotation()
-        {
-            return 0 * (float)(api.World.Rand.NextDouble() * Math.PI * 2);
-        }
-
-        private void UploadModel(ICoreClientAPI capi)
-        {
-            int vertices = 0, indices = 0;
-            foreach (var mesh in _meshes)
+            void UpdateModel(ICoreClientAPI capi, float dt)
             {
-                vertices += mesh.VerticesCount;
-                indices += mesh.IndicesCount;
+                var origin = new Vec3f(0.5f, 0.5f, 0.5f);
+                _meshes[0].Rotate(origin, 4 * dt, 4 * dt, 4 * dt);
+                _meshes[1].Rotate(origin, 0 * dt, 0 * dt, 3 * dt);
+                _meshes[2].Rotate(origin, 0 * dt, 2f * dt, 0 * dt);
+                _meshes[3].Rotate(origin, 1 * dt, 0 * dt, 0 * dt);
+
+                UploadModel(capi);
             }
 
-            var fullMesh = new MeshData(vertices, indices);
-            foreach (var mesh in _meshes)
+            void UploadModel(ICoreClientAPI capi)
             {
-                fullMesh.AddMeshData(mesh);
+                int vertices = 0, indices = 0;
+                foreach (var mesh in _meshes)
+                {
+                    vertices += mesh.VerticesCount;
+                    indices += mesh.IndicesCount;
+                }
+
+                var fullMesh = new MeshData(vertices, indices);
+                foreach (var mesh in _meshes)
+                {
+                    fullMesh.AddMeshData(mesh);
+                }
+
+                if (_model == null)
+                {
+                    _model = capi.Render.UploadMesh(fullMesh);
+                }
+                else
+                {
+                    capi.Render.UpdateMesh(_model, fullMesh);
+                }
             }
 
-            if (_model == null)
+            float RandomRotation()
             {
-                _model = capi.Render.UploadMesh(fullMesh);
-            }
-            else
-            {
-                capi.Render.UpdateMesh(_model, fullMesh);
+                return 0 * (float)(api.World.Rand.NextDouble() * Math.PI * 2);
             }
         }
     }
