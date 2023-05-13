@@ -106,8 +106,14 @@ namespace CaptureAnimals
                     World.PlaySoundAt(new AssetLocation("game:sounds/thud"), this, null, false, 32);
                     World.SpawnCubeParticles(entity.SidedPos.XYZ.OffsetCopy(0, 0.2, 0), ProjectileStack, 0.2f, 20);
 
-                    if (entity.GetBehavior("health") is EntityBehaviorHealth healthBehavior && CanCapture(entity))
+                    if (entity.GetBehavior("health") is EntityBehaviorHealth healthBehavior)
                     {
+                        if (!CanCapture(entity))
+                        {
+                            ShowMessage($"{Constants.ModId}:cage-notallowed");
+                            return;
+                        }
+
                         if (TryCapture(entity, healthBehavior))
                         {
                             CaptureSuccess(entity);
@@ -167,7 +173,8 @@ namespace CaptureAnimals
 
             Api.World.SpawnItemEntity(full, entity.Pos.XYZ);
 
-            FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-captured"));
+            ShowMessage($"{Constants.ModId}:cage-captured", error: false);
+
             entity.Die(EnumDespawnReason.Removed);
             Die();
         }
@@ -177,16 +184,36 @@ namespace CaptureAnimals
             float breakChance = ProjectileStack.Collectible.Attributes["breakchance"].AsFloat();
             if (breakChance >= Api.World.Rand.NextDouble())
             {
-                FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-broken"));
+                ShowMessage($"{Constants.ModId}:cage-broken");
             }
             else
             {
-                FiredBy?.SendMessage(Lang.Get($"{Constants.ModId}:cage-mistake"));
+                ShowMessage($"{Constants.ModId}:cage-mistake");
                 AssetLocation caseCode = ProjectileStack.Collectible.CodeWithVariant("type", "case");
                 var caseStack = new ItemStack(Api.World.GetItem(caseCode));
                 Api.World.SpawnItemEntity(caseStack, ServerPos.XYZ);
             }
             Die();
+        }
+
+        private void ShowMessage(string langkey, bool error = true)
+        {
+            if (Api is ICoreServerAPI sapi)
+            {
+                IPlayer player = sapi.World.PlayerByUid((FiredBy as EntityPlayer)?.PlayerUID);
+                if (player != null)
+                {
+                    string text = Lang.Get(langkey);
+                    if (error)
+                    {
+                        sapi.SendIngameError(player as IServerPlayer, "", text);
+                    }
+                    else
+                    {
+                        sapi.SendIngameDiscovery(player as IServerPlayer, "", text);
+                    }
+                }
+            }
         }
 
         private bool MatchNearestAnimal(Entity entity)
