@@ -16,7 +16,7 @@ namespace CaptureAnimals
 
         private long _lastRenderMs = 0;
         private MeshData[] _meshes = Array.Empty<MeshData>();
-        private MeshRef? _model;
+        private MultiTextureMeshRef? _model;
         private BaitsManager _baitsManager = null!;
 
         public override void OnLoaded(ICoreAPI api)
@@ -154,8 +154,8 @@ namespace CaptureAnimals
 
             if (cage.IsEmpty)
             {
-                return new WorldInteraction[]
-                {
+                return
+                [
                     new WorldInteraction
                     {
                         ActionLangCode = $"{Constants.ModId}:heldhelp-cage-throw-empty",
@@ -167,7 +167,7 @@ namespace CaptureAnimals
                         MouseButton = EnumMouseButton.Right,
                         HotKeyCode = "sneak"
                     }
-                };
+                ];
             }
             else if (cage.IsFull)
             {
@@ -317,11 +317,11 @@ namespace CaptureAnimals
 
                 if (_model == null)
                 {
-                    _model = capi.Render.UploadMesh(fullMesh);
+                    _model = capi.Render.UploadMultiTextureMesh(fullMesh);
                 }
                 else
                 {
-                    capi.Render.UpdateMesh(_model, fullMesh);
+                    capi.Render.UpdateMesh(_model.meshrefs[0], fullMesh);
                 }
             }
 
