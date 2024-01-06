@@ -33,8 +33,6 @@
   "heldhelp-cage-throw-full": "Throw to release an animal",
   "heldhelp-cage-open": "Open",
 
-  "game:tabname-captureanimals": "Capture Animals",
-
   "heldinfo-cage-empty-breakchance": "Break chance: {0}%",
   "heldinfo-cage-empty-efficiency": "Efficiency: {0}%",
   "heldinfo-cage-empty-bait": "Contains: {0}",
