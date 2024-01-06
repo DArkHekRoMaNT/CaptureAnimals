@@ -1,21 +1,21 @@
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema https://raw.githubusercontent.com/DArkHekRoMaNT/VSMods/master/Mod.xsd">
-	<PropertyGroup>
-		<Name>Capture Animals</Name>
-		<ModId>captureanimals</ModId>
-		<Version>2.5.3</Version>
-		<Authors>DArkHekRoMaNT</Authors>
-		<GameVersion>1.19.0-rc.5</GameVersion>
-		<MinimalGameVersion>1.19.0-rc.5</MinimalGameVersion>
-		<Description>Capture them all!</Description>
-		<Website>https://github.com/DArkHekRoMaNT/CaptureAnimals</Website>
-	</PropertyGroup>
-	<ItemGroup>
-		<Dependencies Include="commonlib">
-			<Version>2.3.0</Version>
-		</Dependencies>
+    <PropertyGroup>
+        <Name>Capture Animals</Name>
+        <ModId>captureanimals</ModId>
+        <Version>2.6.0</Version>
+        <Authors>DArkHekRoMaNT</Authors>
+        <GameVersion>1.19.0-rc.5</GameVersion>
+        <MinimalGameVersion>1.19.0-rc.5</MinimalGameVersion>
+        <Description>Capture them all!</Description>
+        <Website>https://github.com/DArkHekRoMaNT/CaptureAnimals</Website>
+    </PropertyGroup>
+    <ItemGroup>
+        <Dependencies Include="commonlib">
+            <Version>2.3.0</Version>
+        </Dependencies>
 
-		<IncludeFiles Include="modicon.png" />
-		<IncludeFiles Include="LICENSE" />
-		<IncludeFiles Include="README.md" />
-	</ItemGroup>
+        <IncludeFiles Include="modicon.png" />
+        <IncludeFiles Include="LICENSE" />
+        <IncludeFiles Include="README.md" />
+    </ItemGroup>
 </Project>
