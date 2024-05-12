@@ -1,10 +1,7 @@
 {
   "code": "throwncage",
   "class": "EntityThrownCage",
-  "hitboxSize": {
-    "x": 0.5,
-    "y": 0.5
-  },
+  "hitboxSize": { "x": 0.5, "y": 0.5 },
   "variantgroups": [
     { "code": "type", "states": [ "case", "empty", "full" ] },
     { "code": "metal", "states": [ "copper", "tinbronze", "bismuthbronze", "blackbronze", "iron", "meteoriciron", "steel", "creative" ] }
