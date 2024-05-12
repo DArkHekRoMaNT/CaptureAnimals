@@ -2,10 +2,10 @@
 	<PropertyGroup>
 		<Name>Capture Animals</Name>
 		<ModId>captureanimals</ModId>
-		<Version>2.6.1</Version>
+		<Version>2.7.0</Version>
 		<Authors>DArkHekRoMaNT</Authors>
-		<GameVersion>1.19.0-rc.5</GameVersion>
-		<MinimalGameVersion>1.19.0-rc.5</MinimalGameVersion>
+		<GameVersion>1.19.7</GameVersion>
+		<MinimalGameVersion>1.19.0</MinimalGameVersion>
 		<Description>Capture them all!</Description>
 		<Website>https://github.com/DArkHekRoMaNT/CaptureAnimals</Website>
 	</PropertyGroup>
