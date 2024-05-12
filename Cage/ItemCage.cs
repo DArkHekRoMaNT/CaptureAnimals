@@ -210,23 +210,6 @@ namespace CaptureAnimals
                         bait.GetName()
                     ));
                 }
-                else
-                {
-                    dsc.AppendLine(Lang.Get($"{Constants.ModId}:heldinfo-cage-empty-baitlist"));
-                    foreach (AssetLocation key in _baitsManager.AllBaits.Keys)
-                    {
-                        if (api.World.GetBlock(key) != null)
-                        {
-                            string langkey = key.Clone().WithLocationPrefixOnce(new("block-")).ToString();
-                            dsc.AppendLine($"\t{Lang.Get(langkey)}");
-                        }
-                        else if (api.World.GetItem(key) != null)
-                        {
-                            string langkey = key.Clone().WithLocationPrefixOnce(new("item-")).ToString();
-                            dsc.AppendLine($"\t{Lang.Get(langkey)}");
-                        }
-                    }
-                }
             }
         }
 

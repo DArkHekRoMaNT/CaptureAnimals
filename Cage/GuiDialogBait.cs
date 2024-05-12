@@ -10,12 +10,15 @@ namespace CaptureAnimals
     public class GuiDialogBait : GuiDialogGeneric
     {
         private readonly InventoryCage _inventory;
+        private readonly BaitsManager _baitsManager;
 
         public GuiDialogBait(InventoryCage inventory, ICoreClientAPI capi)
             : base(Lang.Get($"{Constants.ModId}:bait-dialog-title"), capi)
         {
             _inventory = inventory;
             _inventory.SlotModified += n => UpdateText();
+
+            _baitsManager = capi.ModLoader.GetModSystem<BaitsManager>();
 
             InitDialog();
         }
@@ -76,8 +79,7 @@ namespace CaptureAnimals
             string text;
 
             var baitCode = _inventory[0]?.Itemstack?.Collectible?.Code;
-            var baitsManager = capi.ModLoader.GetModSystem<BaitsManager>();
-            if (baitCode != null && baitsManager.AllBaits.TryGetValue(baitCode, out var captureEntities))
+            if (baitCode != null && _baitsManager.AllBaits.TryGetValue(baitCode, out var captureEntities))
             {
                 var info = new Dictionary<string, int>();
                 foreach (var captureEntity in captureEntities)
@@ -100,7 +102,22 @@ namespace CaptureAnimals
             }
             else
             {
-                text = Lang.Get($"{Constants.ModId}:bait-dialog-placeholder");
+                var sb = new StringBuilder();
+                sb.AppendLine(Lang.Get($"{Constants.ModId}:heldinfo-cage-empty-baitlist"));
+                foreach (AssetLocation key in _baitsManager.AllBaits.Keys)
+                {
+                    if (capi.World.GetBlock(key) != null)
+                    {
+                        string langkey = key.Clone().WithLocationPrefixOnce(new("block-")).ToString();
+                        sb.AppendLine($"\t{Lang.Get(langkey)}");
+                    }
+                    else if (capi.World.GetItem(key) != null)
+                    {
+                        string langkey = key.Clone().WithLocationPrefixOnce(new("item-")).ToString();
+                        sb.AppendLine($"\t{Lang.Get(langkey)}");
+                    }
+                }
+                text = sb.ToString();
             }
 
             var textElem = SingleComposer.GetDynamicText("text");
