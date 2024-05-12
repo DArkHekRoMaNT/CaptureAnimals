@@ -50,7 +50,7 @@ namespace CaptureAnimals
                         .AddInset(insetBounds, 3)
                         .AddDynamicText(string.Empty, CairoFont.WhiteSmallText().WithOrientation(EnumTextOrientation.Left), textBounds, "text")
                     .EndClip()
-                    .AddVerticalScrollbar(OnNewScrollbarvalue, scrollbarBounds, "scrollbar")
+                    .AddVerticalScrollbar(OnNewScrollbarValue, scrollbarBounds, "scrollbar")
                 .EndChildElements()
                 .Compose()
             ;
@@ -63,7 +63,7 @@ namespace CaptureAnimals
             );
         }
 
-        private void OnNewScrollbarvalue(float value)
+        private void OnNewScrollbarValue(float value)
         {
             GuiElementDynamicText textElem = SingleComposer.GetDynamicText("text");
 
@@ -84,16 +84,16 @@ namespace CaptureAnimals
                 {
                     var loc = new AssetLocation(captureEntity.Code);
                     info.Add(
-                        Lang.Get($"{loc.Domain}:item-creature-{loc.Path}"),
+                        $"{loc.Domain}:item-creature-{loc.Path}",
                         (int)(captureEntity.CaptureChance * 100f)
                     );
                 }
 
                 var orderedInfo = info.OrderBy((e) => e.Key).OrderBy((e) => e.Value);
                 var sb = new StringBuilder();
-                foreach (var el in orderedInfo)
+                foreach (var (code, chance) in orderedInfo)
                 {
-                    sb.AppendLine($"{el.Value}%: {el.Key}");
+                    sb.AppendLine($"{chance}%: {Lang.Get(code)}");
                 }
 
                 text = $"{sb}";
