@@ -23,27 +23,21 @@
   "item-cage-full-meteoriciron": "Клетка из метеоритного железа",
   "item-cage-full-steel": "Клетка из стали",
   "item-cage-full-creative": "Креативная клетка",
-  
   "cage-notallowed": "Это животное не может быть захвачено",
   "cage-mistake": "Не удалось поймать животное (ослабленных животных ловить легче)",
   "cage-broken": "Клетка сломалась...",
   "cage-captured": "Животное захвачено!",
-
   "heldhelp-cage-throw-empty": "Бросьте, чтобы поймать животное",
   "heldhelp-cage-throw-full": "Бросьте, чтобы отпустить животное",
   "heldhelp-cage-open": "Открыть",
-
   "heldinfo-cage-empty-breakchance": "Шанс сломаться: {0}%",
   "heldinfo-cage-empty-efficiency": "Эффективность: {0}%",
   "heldinfo-cage-empty-bait": "Содержит: {0}",
   "heldinfo-cage-empty-baitlist": "Доступные приманки:",
   "heldinfo-cage-full-entityname": "Содержит: {0}",
-
   "bait-dialog-title": "Инвентарь клетки",
   "bait-dialog-placeholder": "Нет подходящих животных",
-
   "nothing": "Ничего",
-
   "item-handbooktitle-cage-*-empty": "Информация",
   "item-handbooktext-cage-*-empty": "<b>Шанс сломаться:</b> с этим шансом клетка сломается, если вы попадете в животное, но не поймаете его</br><b>Эффективность:</b> при 100% эффективности, -1% hp животного добавит +1% к шансу поимки."
 }
