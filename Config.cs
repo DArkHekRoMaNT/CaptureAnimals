@@ -1,5 +1,4 @@
 using CommonLib.Config;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Vintagestory.API.Common;
@@ -13,10 +12,9 @@ namespace CaptureAnimals
     {
         private string? _lastExclideEntities = null;
         private string? _lastIncludeEntities = null;
-        private readonly List<string> _availableEntities = new();
+        private readonly List<string> _availableEntities = [];
 
-        [Description("Exclude these entities, support wildcards. Use comma (,) as separator. " +
-            "Take precedence over IncludeEntities")]
+        [Description("Exclude these entities, support wildcards. Use comma (,) as separator. Take precedence over IncludeEntities")]
         public string ExcludeEntities { get; set; } = string.Empty;
 
 
@@ -80,7 +78,7 @@ namespace CaptureAnimals
             {
                 if (string.IsNullOrEmpty(codes))
                 {
-                    return Array.Empty<string>();
+                    return [];
                 }
                 return codes.Split(',');
             }

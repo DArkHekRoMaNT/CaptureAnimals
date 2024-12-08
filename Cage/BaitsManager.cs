@@ -1,5 +1,4 @@
 using ProtoBuf;
-using System;
 using System.Collections.Generic;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
@@ -11,7 +10,7 @@ namespace CaptureAnimals
 {
     public class BaitsManager : ModSystem
     {
-        public Dictionary<AssetLocation, List<CaptureEntity>> AllBaits { get; private set; } = new();
+        public Dictionary<AssetLocation, List<CaptureEntity>> AllBaits { get; private set; } = [];
 
         private IServerNetworkChannel? _serverChannel;
 
@@ -137,7 +136,6 @@ namespace CaptureAnimals
             public Dictionary<AssetLocation, List<CaptureEntity>> AllBaits { get; set; }
         }
 
-
         [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
         public class CaptureEntity
         {
@@ -158,7 +156,7 @@ namespace CaptureAnimals
         {
             public string Type { get; set; } = string.Empty;
             public string Code { get; set; } = string.Empty;
-            public CaptureEntity[] Entities { get; set; } = Array.Empty<CaptureEntity>();
+            public CaptureEntity[] Entities { get; set; } = [];
         }
     }
 }
