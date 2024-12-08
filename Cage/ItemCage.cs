@@ -15,15 +15,8 @@ namespace CaptureAnimals
         public bool IsCase => LastCodePart(1) == "case";
 
         private long _lastRenderMs = 0;
-        private MeshData[] _meshes = Array.Empty<MeshData>();
+        private MeshData[] _meshes = [];
         private MultiTextureMeshRef? _model;
-        private BaitsManager _baitsManager = null!;
-
-        public override void OnLoaded(ICoreAPI api)
-        {
-            base.OnLoaded(api);
-            _baitsManager = api.ModLoader.GetModSystem<BaitsManager>();
-        }
 
         public override void OnHeldInteractStart(ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, bool firstEvent, ref EnumHandHandling handling)
         {
@@ -60,22 +53,8 @@ namespace CaptureAnimals
                 return false;
             }
 
-            if (byEntity.World is IClientWorldAccessor)
-            {
-                var tf = new ModelTransform();
-                tf.EnsureDefaultValues();
-
-                float offset = GameMath.Clamp(secondsUsed * 3, 0, 1.5f);
-
-                tf.Translation.Set(offset / 4f, offset / 2f, 0);
-                tf.Rotation.Set(0, 0, GameMath.Min(90, secondsUsed * 360 / 1.5f));
-
-                byEntity.Controls.UsingHeldItemTransformBefore = tf;
-            }
-
             return true;
         }
-
 
         public override bool OnHeldInteractCancel(float secondsUsed, ItemSlot slot, EntityAgent byEntity, BlockSelection blockSel, EntitySelection entitySel, EnumItemUseCancelReason cancelReason)
         {
@@ -150,7 +129,7 @@ namespace CaptureAnimals
 
         public override WorldInteraction[] GetHeldInteractionHelp(ItemSlot inSlot)
         {
-            ItemCage cage = (ItemCage)inSlot.Itemstack.Item;
+            var cage = (ItemCage)inSlot.Itemstack.Item;
 
             if (cage.IsEmpty)
             {
@@ -171,14 +150,14 @@ namespace CaptureAnimals
             }
             else if (cage.IsFull)
             {
-                return new WorldInteraction[]
-                {
+                return
+                [
                     new WorldInteraction
                     {
                         ActionLangCode = $"{Constants.ModId}:heldhelp-cage-throw-full",
                         MouseButton = EnumMouseButton.Right
                     }
-                };
+                ];
             }
             else
             {
@@ -237,7 +216,7 @@ namespace CaptureAnimals
                     CreateModel(capi);
                 }
 
-                // Hook to fix renderinfo.dt is zero if not in hand
+                // Hack to fix renderinfo.dt is zero if not in hand
                 // Do real dt for all equivalent stacks
                 float dt = api.World.ElapsedMilliseconds - _lastRenderMs;
                 _lastRenderMs = api.World.ElapsedMilliseconds;
