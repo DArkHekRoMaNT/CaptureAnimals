@@ -12,14 +12,14 @@ namespace CaptureAnimals
     {
         private string? _lastExclideEntities = null;
         private string? _lastIncludeEntities = null;
-        private readonly List<string> _availableEntities = [];
+        private readonly HashSet<string> _availableEntities = [];
 
         [Description("Exclude these entities, support wildcards. Use comma (,) as separator. Take precedence over IncludeEntities")]
         public string ExcludeEntities { get; set; } = string.Empty;
 
 
         [Description("Include these entities, support wildcards. Use comma (,) as separator")]
-        public string IncludeEntities { get; set; } = "*";
+        public string IncludeEntities { get; set; } = "*:*";
 
         public string[] GetAvailableEntities(ICoreAPI api)
         {
@@ -40,7 +40,7 @@ namespace CaptureAnimals
             string[] included = Parse(IncludeEntities);
             string[] excluded = Parse(ExcludeEntities);
 
-            var list = new List<string>();
+            var list = new HashSet<string>();
             foreach (EntityProperties entity in api.World.EntityTypes)
             {
                 if (!entity.Server.BehaviorsAsJsonObj.Any(e => e["code"].AsString() == "health"))
@@ -63,7 +63,7 @@ namespace CaptureAnimals
                             }
                         }
 
-                        if (!skip && !list.Contains(code.ToString()))
+                        if (!skip)
                         {
                             list.Add(code.ToString());
                         }
